@@ -102,21 +102,26 @@ HTMLActuator.prototype.positionClass = function (position) {
   position = this.normalizePosition(position);
   return "tile-position-" + position.x + "-" + position.y;
 };
-
+cscore = 0;
 HTMLActuator.prototype.updateScore = function (score) {
   this.clearContainer(this.scoreContainer);
 
   var difference = score - this.score;
   this.score = score;
 
-  this.scoreContainer.textContent = this.score;
+	if (cscore!=0) {
+		  users.addScores(difference);
+	}
+	cscore++;
 
+ 
+  this.scoreContainer.textContent = this.score;
   if (difference > 0) {
     var addition = document.createElement("div");
     addition.classList.add("score-addition");
     addition.textContent = "+" + difference;
-
     this.scoreContainer.appendChild(addition);
+
   }
 };
 
