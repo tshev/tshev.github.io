@@ -683,3 +683,19 @@ hr {
     margin-top: 90px !important; }
   .game-message .lower {
     margin-top: 30px !important; } }
+
+#adder { 
+	float:left;
+	margin-left: 100px;
+}
+body {
+	margin: 0 auto;
+	width: 1024px;
+}
+.user_label {
+	display:inline-block;width:100px;
+}
+button {
+	height: 40px;
+}
+.btn-success{font-weight:bold;color:#fff;background-color:#5cb85c;border-color:#4cae4c}.btn-success:hover,.btn-success:focus,.btn-success:active,.btn-success.active,.open .dropdown-toggle.btn-success{color:#fff;background-color:#47a447;border-color:#398439}

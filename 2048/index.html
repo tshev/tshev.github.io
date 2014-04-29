@@ -13,12 +13,12 @@
   <meta name="MobileOptimized" content="320">
   <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0, maximum-scale=1, user-scalable=no, minimal-ui">
 </head>
-<body style="margin: 0 auto; width: 1024px;">
+<body>
 <h1> 2048 - hotseat</h1>
 
  <div class="container" style="float: left;">
     <div class="heading">
-      <h1 id="pgame" class="title">2048</h1>
+      <h1 id="pgame" class="title">Weclome</h1>
       <div class="scores-container">
         <div class="score-container">0</div>
         <div class="best-container">0</div>
@@ -67,36 +67,38 @@
       </div>
     </div>
 
-    <p class="game-explanation">
-      <strong class="important">How to play:</strong> Use your <strong>arrow keys</strong> to move the tiles. When two tiles with the same number touch, they <strong>merge into one!</strong>
-    </p>
-    <hr>
-    <p>
-    <strong class="important">Note:</strong> This site is the official version of 2048. You can play it on your phone via <a href="http://git.io/2048">http://git.io/2048.</a> All other apps or sites are derivatives or fakes, and should be used with caution.
-    </p>
-    <hr>
-    <p>
-    Created by <a href="http://gabrielecirulli.com" target="_blank">Gabriele Cirulli.</a> Based on <a href="https://itunes.apple.com/us/app/1024!/id823499224" target="_blank">1024 by Veewo Studio</a> and conceptually similar to <a href="http://asherv.com/threes/" target="_blank">Threes by Asher Vollmer.</a>
-    </p>
+ 
   </div>
-<div id="adder" style="float:left;margin-left: 100px;">
+<div id="adder">
 	<div>
 		<p>
-			<label style="display:inline-block;width:100px;">Username</label>
+			<label class="user_label">Username</label>
 			<input id="uname" name="adduser"/>
 		</p>
 		<p>
-			<label style="display:inline-block;width:100px;">Moves</label>
+			<label class="user_label">Moves</label>
 			<input id="checks"/>
 		</p>
 		<button id="strg">Add</button>
-		<button id="startgame">StartGame</button>
+		<button id="startgame" class="btn-success">StartGame</button>
 	</div>
 <h2>Multiplayer results</h2>
 <table id="contests">
 </table>
 
 </div>
+<!-- Put this script tag to the <head> of your page -->
+<script type="text/javascript" src="//vk.com/js/api/openapi.js?112"></script>
+
+<script type="text/javascript">
+  VK.init({apiId: 2288643, onlyWidgets: true});
+</script>
+
+<!-- Put this div tag to the place, where the Comments block will be -->
+<div id="vk_comments"></div>
+<script type="text/javascript">
+VK.Widgets.Comments("vk_comments", {limit: 10, width: "520", attach: "*"});
+</script>
 <script src="js/multiuser.js"></script>
   <script src="js/animframe_polyfill.js"></script>
   <script src="js/keyboard_input_manager.js"></script>
