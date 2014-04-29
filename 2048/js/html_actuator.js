@@ -107,7 +107,7 @@ HTMLActuator.prototype.positionClass = function (position) {
   position = this.normalizePosition(position);
   return "tile-position-" + position.x + "-" + position.y;
 };
-
+var cse = 0;
 HTMLActuator.prototype.updateScore = function (score) {
   this.clearContainer(this.scoreContainer);
 
@@ -122,7 +122,9 @@ HTMLActuator.prototype.updateScore = function (score) {
 
     this.scoreContainer.appendChild(addition);
   }
+	if(cse!=0)
 	users.addScores(difference);
+	cse++;
 };
 
 HTMLActuator.prototype.updateBestScore = function (bestScore) {
