@@ -1,106 +1,23 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<title>tshev in github.io</title>
-	  <meta charset="utf-8">
-	<script type="" src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-	<script type="text/javascript" src="./js/bootstrap.js"></script>
-	<link rel="stylesheet" href="./css/bootstrap.css"/>
-	
+---
+layout: default
+---
 
-</head>
-<body>
- <div class="navbar navbar-default navbar-static-top" role="navigation" style="position: fixed; width:100%; padding-left:6%; padding-right:5%; text-align:center;">
-      <div class="container">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" style="font-weight:bold; color: #111;" href="#">tshev.github.io</a>
-        </div>
-        <div class="navbar-collapse collapse">
-          <ul class="nav navbar-nav">
-            <!--<li class="active"><a href="#">Home</a></li>
-            <li><a href="#about">About me</a></li>
-            <li><a href="#contact">Blog</a></li>
-            <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
-              <!--<ul class="dropdown-menu">
-                <li><a href="#">Action</a></li>
-                <li><a href="#">Another action</a></li>
-                <li><a href="#">Something else here</a></li>
-                <li class="divider"></li>
-                <li class="dropdown-header">Nav header</li>
-                <li><a href="#">Separated link</a></li>
-                <li><a href="#">One more separated link</a></li>
-              </ul>-->
-            </li>
-          </ul>
-          <ul class="nav navbar-nav navbar-right">
-            <li><a href="http://tshev.tumblr.com/"><img height="15px" src="http://assets.tumblr.com/images/favicons/favicon.ico?1"/>&nbsp; My tumblr</a></li>
-            <li><a href="http://facebook.com/barmaplot"><img height="15px" src="https://m-static.ak.fbcdn.net/rsrc.php/yl/r/H3nktOa7ZMg.ico"/>&nbsp;facebook</a></li>
-          </ul>
-        </div><!--/.nav-collapse -->
-      </div>
-    </div>
+<div class="home">
 
-    <br/>
-    <br/>
-<div class="container">
-   <div class="col-md-4 feedheight"> 
-      <h3 class="subtitle">Что я делаю?</h3>
-    	<div class="feed">
-    	   <p class="feedtext">
-    	  	   <img src="http://octodex.github.com/images/octobiwan.jpg" width="200px"/>
-    		   <p>
-    	     	Пытаюсь сделать мир куда лучшим местом, чем оно есть
-    		   в данный момент.
-    		   </p>
-    	</p>
-    	   <div class="feedfooter">
-      	</div>
-    	  </div>
-    </div>
-   <div class="col-md-4 feedheight"> 
-      <h3 class="subtitle">Fly on the map</h3>
-    	<div class="feed">
-    	   <p class="feedtext">
-    	  	   <img src="./images/fly.png" height="140px"/>
-    		   <p>
-               Imitation of the fly on the  radar.
-    		   </p>
-    	</p>
-    	   <div class="feedfooter">
-    	   	<a href="https://github.com/tshev/Fly-on-the-map" class="btn btn-primary">View details</a>
-      	</div>
-    	  </div>
-    </div>
-<div class="col-md-4 feedheight">
-	<h3 class="subtitle">2048 hotseat</h3>
-	<div class="feed">
-		<img src="http://cs619526.vk.me/v619526164/4ecf/wKgvUaay1-Y.jpg" width="100%"/>
-	</div>
-	<div class="feedfooter">
-		<a href="http://tshev.github.io/2048/" class="btn btn-primary">Play</a>
-		<a href="https://github.com/tshev/2048-hotseat" class="btn btn-primary">Repo</a>
-	</div>
-</div>
-   <div class="col-md-4 feedheight"> 
-      <h3 class="subtitle">CS-Trainings</h3>
-    	<div class="feed">
-    		   <p>
-               Problem sets of CS.
-    		   </p>
-    	</p>
-    	   <div class="feedfooter">
-    	   	<a href="https://github.com/tshev/CS-trainings" class="btn btn-primary">View details</a>
-      	</div>
-    	  </div>
-    </div>
+  <h1 class="page-heading">Posts</h1>
+
+  <ul class="post-list">
+    {% for post in site.posts %}
+      <li>
+        <span class="post-meta">{{ post.date | date: "%b %-d, %Y" }}</span>
+
+        <h2>
+          <a class="post-link" href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
+        </h2>
+      </li>
+    {% endfor %}
+  </ul>
+
+  <p class="rss-subscribe">subscribe <a href="{{ "/feed.xml" | prepend: site.baseurl }}">via RSS</a></p>
 
 </div>
-</body>
-</html>
