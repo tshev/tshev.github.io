@@ -3,7 +3,7 @@ title: tshev.github.io
 email: tshev.org@gmail.com
 description: > # this means to ignore newlines until "baseurl:"
   Native programming. Algorithms, data structures Linux.
-  Programming language: C, C++, Python
+  Programming languages: C, C++, Python
 baseurl: "" # the subpath of your site, e.g. /blog/
 url: "http://tshev.org" # the base hostname & protocol for your site
 twitter_username: tshevorg
