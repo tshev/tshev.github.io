@@ -2,12 +2,12 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>tshev.github.io</title>
-    <description>Native programming. Algorithms, data structures Linux. Programming language: C, C++, Python
+    <description>Native programming. Algorithms, data structures Linux. Programming languages: C, C++, Python
 </description>
     <link>http://tshev.org/</link>
     <atom:link href="http://tshev.org/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Thu, 17 Sep 2015 21:56:14 +0300</pubDate>
-    <lastBuildDate>Thu, 17 Sep 2015 21:56:14 +0300</lastBuildDate>
+    <pubDate>Thu, 17 Sep 2015 21:58:24 +0300</pubDate>
+    <lastBuildDate>Thu, 17 Sep 2015 21:58:24 +0300</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
     
       <item>
