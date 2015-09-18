@@ -11,7 +11,7 @@ Let's create file `generator.py`
 
 {% highlight python %}
 
-``
+```
 class Generator(object):
     def __init__(self, function, w0, *args):
         self.args = args
@@ -31,13 +31,14 @@ class Generator(object):
         for i in range(minimum, n + 1):
             self.storage.append(self.function(self.storage[i - 1], *self.args))
         return self.storage[n]
-``
+```
 {% endhighlight  %}
 
 Let's write `visualize.py`
 
 
 {% highlight python %}
+```
 #!/usr/bin/env python
 import contextlib
 import matplotlib
@@ -115,7 +116,7 @@ def main(argv):
     with contextlib.closing(Application("Lab #1")) as app:
         app.pack()
 
-
+```
 {% endhighlight %}
 
 [tshev]:      http://tshev.org
