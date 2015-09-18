@@ -34,7 +34,7 @@ class Generator(object):
 
 {% endhighlight  %}
 
-Lets write `visualize.py`
+Let's write `visualize.py`
 
 
 {% highlight python %}
