@@ -94,7 +94,7 @@ class Application(object):
             self.canvas.draw()
             print(n)
         except Exception as e:
-            print e
+            print(e)
 
     def pack(self):
         self.canvas._tkcanvas.pack(side=Tk.TOP, fill=Tk.BOTH, expand=1)
