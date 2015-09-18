@@ -66,7 +66,8 @@
 
 <p>Let’s create file <code>generator.py</code></p>
 
-<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">class</span> <span class="nc">Generator</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="sb">``</span><span class="err">`</span>
+<span class="k">class</span> <span class="nc">Generator</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">function</span><span class="p">,</span> <span class="n">w0</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="n">args</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">storage</span> <span class="o">=</span> <span class="p">[</span><span class="n">w0</span><span class="p">]</span>
@@ -84,11 +85,13 @@
         <span class="n">minimum</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">storage</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">minimum</span><span class="p">,</span> <span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">storage</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">function</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">storage</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">))</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">storage</span><span class="p">[</span><span class="n">n</span><span class="p">]</span></code></pre></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">storage</span><span class="p">[</span><span class="n">n</span><span class="p">]</span>
+<span class="sb">``</span><span class="err">`</span></code></pre></div>
 
-<p>Lets write <code>visualize.py</code></p>
+<p>Let’s write <code>visualize.py</code></p>
 
-<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="c">#!/usr/bin/env python</span>
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="sb">``</span><span class="err">`</span>
+<span class="c">#!/usr/bin/env python</span>
 <span class="kn">import</span> <span class="nn">contextlib</span>
 <span class="kn">import</span> <span class="nn">matplotlib</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
@@ -144,7 +147,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
             <span class="k">print</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="k">print</span> <span class="n">e</span>
+            <span class="k">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">pack</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">_tkcanvas</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="n">Tk</span><span class="o">.</span><span class="n">TOP</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="n">Tk</span><span class="o">.</span><span class="n">BOTH</span><span class="p">,</span> <span class="n">expand</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
@@ -163,7 +166,9 @@
 
 <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">argv</span><span class="p">):</span>
     <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">closing</span><span class="p">(</span><span class="n">Application</span><span class="p">(</span><span class="s">&quot;Lab #1&quot;</span><span class="p">))</span> <span class="k">as</span> <span class="n">app</span><span class="p">:</span>
-        <span class="n">app</span><span class="o">.</span><span class="n">pack</span><span class="p">()</span></code></pre></div>
+        <span class="n">app</span><span class="o">.</span><span class="n">pack</span><span class="p">()</span>
+
+<span class="sb">``</span><span class="err">`</span></code></pre></div>
 
 
   </article>

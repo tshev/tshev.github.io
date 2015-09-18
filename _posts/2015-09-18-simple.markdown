@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Alternative for sizeof(array)/sizeof(array[0])"
-date:   2015-09-17 15:29:21
+date:   2015-09-18 15:29:21
 categories: c++
 ---
 
