@@ -7,7 +7,6 @@ categories: web
 
 ![uniform distrbution](/images/post4/hate_google.png)
 
-{% endhighlight %}
 [tshev]:      http://tshev.org
 [tshev-gh]:   https://github.com/tshev
 [jekyll-help]: https://github.com/tshev
