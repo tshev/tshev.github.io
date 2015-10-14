@@ -6,8 +6,7 @@ categories: helper
 ---
 #Usefule
 
-Building Software Systems At Google and Lessons Learned
-https://www.youtube.com/watch?v=modXC5IWTJI
+[Building Software Systems At Google and Lessons Learned](https://www.youtube.com/watch?v=modXC5IWTJI)
 
 That is end
 

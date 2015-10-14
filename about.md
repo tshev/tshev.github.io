@@ -17,3 +17,12 @@ Favourite programming languages:
 * C
 * Python
 * Scheme
+
+Interests:
+
+* concurency
+* search
+* web spiders
+* maps
+* ranking
+* probability theory
