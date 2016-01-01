@@ -118,6 +118,9 @@ Revises: N4191
 ### Как ты назовешь то, что получилось
 Краткая запись гетерогенного предиката с возможностью сужения к гомогенному.
 
+Детальнее о концепциях можете почитать вот здесь: <http://www.elementsofprogramming.com/eop-concepts.pdf>
+
 [tshev]:      http://tshev.org
 [tshev-gh]:   https://github.com/tshev
 [jekyll-help]: https://github.com/tshev
+
