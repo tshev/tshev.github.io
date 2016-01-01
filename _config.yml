@@ -11,3 +11,6 @@ github_username:  tshev
 
 # Build settings
 markdown: kramdown
+
+gems:
+    - jekyll-gist

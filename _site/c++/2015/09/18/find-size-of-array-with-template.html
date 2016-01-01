@@ -44,6 +44,10 @@
         
           
         
+          
+          <a class="page-link" href="/relax/">Relax</a>
+          
+        
       </div>
     </nav>
 
@@ -65,16 +69,16 @@
     <p>How to find sizeof of stack based array
 Chrome way</p>
 
-<div class="highlight"><pre><code class="language-cpp" data-lang="cpp"><span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">N</span><span class="o">&gt;</span> 
+<figure class="highlight"><pre><code class="language-cpp" data-lang="cpp"><span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">N</span><span class="o">&gt;</span> 
 <span class="kt">char</span> <span class="p">(</span><span class="o">&amp;</span><span class="n">ArraySizeHelper</span><span class="p">(</span><span class="n">T</span> <span class="p">(</span><span class="o">&amp;</span><span class="n">array</span><span class="p">)[</span><span class="n">N</span><span class="p">]))[</span><span class="n">N</span><span class="p">];</span>
-<span class="cp">#define arraysize(array) (sizeof(ArraySizeHelper(array)))</span></code></pre></div>
+<span class="cp">#define arraysize(array) (sizeof(ArraySizeHelper(array)))</span></code></pre></figure>
 
 <p>My alternative</p>
 
-<div class="highlight"><pre><code class="language-cpp" data-lang="cpp"><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">N</span><span class="o">&gt;</span>
+<figure class="highlight"><pre><code class="language-cpp" data-lang="cpp"><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">N</span><span class="o">&gt;</span>
 <span class="kr">inline</span> <span class="kt">size_t</span> <span class="n">array_size</span><span class="p">(</span><span class="n">T</span> <span class="p">(</span><span class="o">&amp;</span><span class="n">array</span><span class="p">)[</span><span class="n">N</span><span class="p">])</span> <span class="p">{</span>
     <span class="k">return</span> <span class="n">N</span><span class="p">;</span>
-<span class="p">}</span></code></pre></div>
+<span class="p">}</span></code></pre></figure>
 
 
   </article>

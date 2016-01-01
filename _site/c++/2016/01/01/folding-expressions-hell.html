@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Первое знакомство с folding expressions или добро пожаловать в ад</title>
+  <meta name="description" content="Лирическое отступление">
+
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://tshev.org/c++/2016/01/01/folding-expressions-hell.html">
+  <link rel="alternate" type="application/rss+xml" title="tshev.github.io" href="http://tshev.org/feed.xml" />
+</head>
+
+
+  <body>
+
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    <a class="site-title" href="/">tshev.github.io</a>
+
+    <nav class="site-nav">
+      <a href="#" class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+          <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+          <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+        </svg>
+      </a>
+
+      <div class="trigger">
+        
+          
+          <a class="page-link" href="/about/">About</a>
+          
+        
+          
+        
+          
+        
+          
+        
+          
+          <a class="page-link" href="/relax/">Relax</a>
+          
+        
+      </div>
+    </nav>
+
+  </div>
+
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <div class="post">
+
+  <header class="post-header">
+    <h1 class="post-title">Первое знакомство с folding expressions или добро пожаловать в ад</h1>
+    <p class="post-meta">Jan 1, 2016</p>
+  </header>
+
+  <article class="post-content">
+    <h2 id="section">Лирическое отступление</h2>
+
+<p>Перед новым годом я зарекся перестать проверять свою почту 
+(это занимает тучу времени, ибо gmail грузится не быстро,
+да и еще всегда помимо обычных человеческих писем,
+приходит большое количество -/+ интересной рассылки да и еще
+пачка уведомлений от сервисов, которыми пользуюсь:
+Python-anywhere, Amazon EC2, Evernote и прочих).</p>
+
+<p>Поздним утром 1-го января после празднования Нового года меня занесло на просторы WWW в поисках интересного.
+ После утраченного часа в твиттере, фейсбуке, и реддите, 
+я вспомнил о тех обещаниях, которые дал сам себе, и полез в сеть в поисках чего-то интересного.</p>
+
+<p>Я забрел на страницу о clang-format, узнал о появлении новой опции AlignConsecutiveDeclarations,
+потом с горечью узнал, что у моей Федоры 23, на данный момент установлен clang-3.7 и я не могу воспользоваться этой опцией.
+В грустных чувствах, я пошел и прочитал затертые до дыр страницы <a href="http://llvm.org/docs/Vectorizers.html">Auto-Vectorization in LLVM</a>,
+почитал еще немножко об <a href="http://clang.llvm.org/docs/AddressSanitizer.html">AddressSanitizer</a>, <a href="http://clang.llvm.org/docs/MemorySanitizer.html">MemorySanitizer</a>, <a href="http://clang.llvm.org/docs/ThreadSanitizer.html">ThreadSanitizer</a>.</p>
+
+<h2 id="section-1">Начало</h2>
+<p>Случилось так, что потом забрел на страницу <a href="http://clang.llvm.org/cxx_status.html">C++ imlementation status</a> в раздел C++1z implementation status, начал прокликивать ссылки попал <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2014/n4295.html">open-std.org</a>, а именно на предложения по поводу использования folding expressions. Авторство которого принадлежит Дрю Саттону и Ричарду Смиту.</p>
+
+<p><code class="highlighter-rouge">
+Andrew Sutton, Richard Smith
+Date: 2014-11-07
+Document number: N4295
+Revises: N4191 
+</code></p>
+
+<p>Таким образом я созерцал очередную нотацию Бекуса-Наура. На этот раз по поводу сворачивания выражений
+ при использовании шаблонов с переменным количеством аргументов.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>fold-expression:
+      ( cast-expression fold-operator ... )
+      ( ... fold-operator cast-expression )
+      ( cast-expression fold-operator ... fold-operator cast-expression )
+
+
+fold-operator: one of
+    +  -  *  /  %  ^  &amp;  |  ~  =  &lt;  &gt;  &lt;&lt;  &gt;&gt;
+    +=  -=  *=  /=  %=  ^=  &amp;=  |=  &lt;&lt;=  &gt;&gt;=
+    ==  !=  &lt;=  &gt;=  &amp;&amp;  ||  ,  .*  -&gt;*
+</code></pre>
+</div>
+
+<p>Таким образом мы с радостью обнаруживаем, что теория может превратится в практику при использования ключа <code class="highlighter-rouge">-std=c++1z</code>. Что пора двинуться с места в каръер и написать код и потрогать руками результат.</p>
+
+<noscript><pre>All:
+    clang++ -v
+    echo &quot;....&quot;
+    clang++ main.cpp -std=c++1z &amp;&amp; ./a.out &amp;&amp; rm ./a.out</pre></noscript>
+<script src="https://gist.github.com/tshev/868a065f2dcdb3fe4fa8.js"> </script>
+
+<p>Дальше, загляну в таблицу “Value of folding empty sequences”, мы можем заметить, что значением по умполчанию является истрина, таким образом, можно упростить функцию <code class="highlighter-rouge">all_true</code> и записать:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>template &lt;typename... Args&gt;
+bool all_true(Args... args) {
+  return (... &amp;&amp; args);
+}
+</code></pre>
+</div>
+
+<p>Напомню, що для использования данного функционала необходим компилятор clang-3.7, либо более новой версии. Если вы владеете <code class="highlighter-rouge">gcc version 5.3.1</code>, то вы не можете воспользоваться данным кодом, так как данная часть от C++1z в нем еще не реализована.</p>
+
+<p>Итак. Прежде, чем двинуться дальше и улучшить данное решение
+(мне, например, хотелось бы вызывать данный метод для переданного предикатов, а не морочится c ручными вызовами предикатов <code class="highlighter-rouge">all(pred(x1), pred(x2)))</code>, вернемся в прошлое, а именно к C++14, а возможно и к C++14 и реализуем обозначенную выше идею, при этом воспользуемя ключевым словом constexpr, чтобы возможно было выполнять подобные вычисления на этапе компиляции, а заодно и воспользоваться <code class="highlighter-rouge">static_assert</code> для создания примитивных тестов, которые будут давать знать о себе в случае ошибки также на этапе компиляции:</p>
+
+<noscript><pre>bool all() {
+    return true;
+}
+
+template &lt;typename Args&gt;
+  inline
+  constexpr
+  bool all(Args args) {
+    return args;
+  }
+  
+template &lt;typename P, typename Arg, typename... Args&gt;
+  inline
+  constexpr
+  bool all(P pred, Arg arg, Args... args) {
+    return arg &amp;&amp; all(args...);
+  }
+
+int main() {
+  static_assert(!all(true, true, false), &quot;Ожидаемый возврат - false&quot;);
+  static_assert(all(true, true, true), &quot;Ожидаемый возврат - true&quot;);
+  return 0;
+}
+</pre></noscript>
+<script src="https://gist.github.com/tshev/b585de9caa0e7556defe.js"> </script>
+
+<p>Вернемся назад к C++1z и желанию реализовать обобщенную версию функции <code class="highlighter-rouge">all_true</code>.</p>
+
+<noscript><pre>All:
+  clang++ main.cpp -std=c++1z -Wall &amp;&amp; ./a.out &amp;&amp; rm ./a.out</pre></noscript>
+<script src="https://gist.github.com/tshev/1af3feedffb9d92bd679.js"> </script>
+
+<p>Замечания по коду:</p>
+
+<ul>
+  <li>В примере мы имеем дело с гомогенным случаем - аргументы следующие за предикатом, имеют один и тот же тип</li>
+  <li>Функция <code class="highlighter-rouge">all</code> допускает передачу аргументов разных типов</li>
+  <li>При передачи аргементов разных типов, будет выполнятся неявное преобразование типов к типу, указанному, в области определения бинарного предиката, за исключением случая использования полиморфных лямбда выражений, а также функциональных объектов, с шаблонным оператором круглых скобок</li>
+  <li>Поскольку аргументы передаются по значению, использование функции <code class="highlighter-rouge">all</code> является допустимым для объектов, которые мают достаточно малый размер. Решение о допустимых размерах объекта оставим читателю, но стоит заметить, что я бы заметил, что на мой взгляд - размер в 1-3 машинных слова вполне допустим, что позволяет вызывать функцию без существенных утрат в производительности,  связанных с копированием.</li>
+</ul>
+
+<h2 id="section-2">Добро пожаловать в ад</h2>
+<p>Давайте сделаем такой финт ушами для решение проблемы с передачей встроенных типов по констатной ссылке, поскольку нам бы хотелось их передавать по значению, а вот пользовательские типы, например вектор, - по констатной ссылке. И это можем сделать при помощи правил перегрузки функций.</p>
+
+<p>Поскольку код, получился большим, пустим в дело заголовочный, файл. В коде мы применим для получения
+желаемого эффекта, воспользуемся той же техникой, что используется в STL запуска разных алгоритмов для различных видов итераторов.</p>
+
+<noscript><pre>All:
+	clang++ ./main.cpp -std=c++1z -Wall &amp;&amp; ./a.out &amp;&amp; rm ./a.out</pre></noscript>
+<script src="https://gist.github.com/tshev/e559e548c55fc2e78722.js"> </script>
+
+<p>И в качестве последнего штриха вернемся в настоящее и заставим данный код работать c C++14 при помощи рекурсии для шаблонов с переменным количеством аргементов.</p>
+<noscript><pre>#include &lt;type_traits&gt;
+#ifndef FOLDING_EXPRESSION_H
+#define FOLDING_EXPRESSION_H
+
+#define requires(...)
+namespace hell {
+
+struct __integral_type_label {};
+struct __not_integral_type_label {};
+
+template&lt;bool _A&gt;
+struct _integral_type_check {
+  using type = __not_integral_type_label;
+};
+
+template&lt;&gt;
+struct _integral_type_check&lt;true&gt; {
+  using type = __integral_type_label;
+};
+// integral
+template &lt;typename __Pred&gt;
+requires (Unary__Predredicate&lt;__Pred, __Args&gt;)
+ inline
+ constexpr
+ bool __all_by_value(__Pred __pred) {
+  return true;
+ }
+
+template &lt;typename __Pred, typename __Arg, typename... __Args&gt;
+requires (Unary__Predredicate&lt;__Pred, __Args&gt;)
+ inline
+ constexpr
+ bool __all_by_value(__Pred __pred, __Arg __arg,  __Args... __args) {
+  return __pred(__arg) &amp;&amp; __all_by_value(__pred, __args...);
+ }
+
+template &lt;typename __Pred, typename __Arg,  typename... __Args&gt;
+requires (Unary__Predredicate&lt;__Pred, __Arg&gt;)
+ inline
+ constexpr
+ bool __all(__integral_type_label, __Pred __pred, __Arg __arg, __Args... __args) {
+  return __pred(__arg) &amp;&amp; __all_by_value(__pred, __args...);
+ }
+
+
+// not integral
+template &lt;typename __Pred&gt;
+requires (Unary__Predredicate&lt;__Pred, __Args&gt;)
+ inline
+ constexpr
+ bool __all_by_cref(__Pred __pred) {
+  return true;
+ }
+
+template &lt;typename __Pred, typename __Arg, typename... __Args&gt;
+requires (Unary__Predredicate&lt;__Pred, __Args&gt;)
+ inline
+ constexpr
+ bool __all_by_cref(__Pred __pred, __Arg __arg,  __Args... __args) {
+  return __pred(__arg) &amp;&amp; __all_by_cref(__pred, __args...);
+ }
+
+template &lt;typename __Pred, typename __Arg,  typename... __Args&gt;
+requires (Unary__Predredicate&lt;__Pred, __Arg&gt;)
+ inline
+ constexpr
+ bool __all(__not_integral_type_label, __Pred __pred, __Arg __arg, __Args... __args) {
+  return __pred(__arg) &amp;&amp; __all_by_cref(__pred, __args...);
+ }
+
+ constexpr
+ inline
+ bool __all_values_are_true() {
+  return true;
+ }
+
+bool all_true() {
+    return true;
+}
+
+template &lt;typename __Args&gt;
+  inline
+  constexpr
+  bool all_true(__Args __args) {
+    return __Args::value;
+  }
+
+template &lt;typename __Arg, typename... __Args&gt;
+  inline
+  constexpr
+  bool all_true(__Arg __arg, __Args... __args) {
+    return __Arg::value &amp;&amp; all_true(__args...);
+  }
+
+
+
+template &lt;typename __Pred, typename... __Args&gt;
+requires (Unary__Predredicate&lt;__Pred, __Args&gt;)
+ inline
+ constexpr
+ bool all(__Pred __pred, __Args... __args) {
+  constexpr bool flag = all_true&lt;std::is_integral&lt;__Args&gt;...&gt;(std::is_integral&lt;__Args&gt;()...);
+  typedef typename _integral_type_check&lt;flag&gt;::type T;
+  return __all(T(), __pred, __args...);
+ }
+
+}
+#endif</pre></noscript>
+<script src="https://gist.github.com/tshev/44c5f0338e6b3d16fb0e.js"> </script>
+
+
+  </article>
+
+</div>
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">tshev.github.io</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col  footer-col-1">
+        <ul class="contact-list">
+          <li>tshev.github.io</li>
+          <li><a href="mailto:tshev.org@gmail.com">tshev.org@gmail.com</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col  footer-col-2">
+        <ul class="social-media-list">
+          
+          <li>
+            <a href="https://github.com/tshev">
+              <span class="icon  icon--github">
+                <svg viewBox="0 0 16 16">
+                  <path fill="#828282" d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"/>
+                </svg>
+              </span>
+
+              <span class="username">tshev</span>
+            </a>
+          </li>
+          
+
+          
+          <li>
+            <a href="https://twitter.com/tshevorg">
+              <span class="icon  icon--twitter">
+                <svg viewBox="0 0 16 16">
+                  <path fill="#828282" d="M15.969,3.058c-0.586,0.26-1.217,0.436-1.878,0.515c0.675-0.405,1.194-1.045,1.438-1.809
+                  c-0.632,0.375-1.332,0.647-2.076,0.793c-0.596-0.636-1.446-1.033-2.387-1.033c-1.806,0-3.27,1.464-3.27,3.27 c0,0.256,0.029,0.506,0.085,0.745C5.163,5.404,2.753,4.102,1.14,2.124C0.859,2.607,0.698,3.168,0.698,3.767 c0,1.134,0.577,2.135,1.455,2.722C1.616,6.472,1.112,6.325,0.671,6.08c0,0.014,0,0.027,0,0.041c0,1.584,1.127,2.906,2.623,3.206 C3.02,9.402,2.731,9.442,2.433,9.442c-0.211,0-0.416-0.021-0.615-0.059c0.416,1.299,1.624,2.245,3.055,2.271 c-1.119,0.877-2.529,1.4-4.061,1.4c-0.264,0-0.524-0.015-0.78-0.046c1.447,0.928,3.166,1.469,5.013,1.469 c6.015,0,9.304-4.983,9.304-9.304c0-0.142-0.003-0.283-0.009-0.423C14.976,4.29,15.531,3.714,15.969,3.058z"/>
+                </svg>
+              </span>
+
+              <span class="username">tshevorg</span>
+            </a>
+          </li>
+          
+        </ul>
+      </div>
+
+      <div class="footer-col  footer-col-3">
+        <p class="text">Native programming. Algorithms, data structures Linux. Programming languages: C, C++, Python
+</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>
