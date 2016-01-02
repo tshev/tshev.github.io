@@ -6,8 +6,8 @@
 </description>
     <link>http://tshev.org/</link>
     <atom:link href="http://tshev.org/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sat, 02 Jan 2016 21:14:10 +0200</pubDate>
-    <lastBuildDate>Sat, 02 Jan 2016 21:14:10 +0200</lastBuildDate>
+    <pubDate>Sat, 02 Jan 2016 21:15:52 +0200</pubDate>
+    <lastBuildDate>Sat, 02 Jan 2016 21:15:52 +0200</lastBuildDate>
     <generator>Jekyll v3.0.1</generator>
     
       <item>
@@ -138,6 +138,8 @@ void selection_sort(It f, It l) {
   &lt;li&gt;Python справился за 3.5 секунды&lt;/li&gt;
   &lt;li&gt;C++ с ключем -O0 справился за 0.231 секунды&lt;/li&gt;
 &lt;/ul&gt;
+
+&lt;p&gt;Можно было бы построить график, но разница слишком разящая.&lt;/p&gt;
 
 </description>
         <pubDate>Sat, 02 Jan 2016 12:51:21 +0200</pubDate>
