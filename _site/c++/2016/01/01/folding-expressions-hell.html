@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>Первое знакомство с folding expressions или добро пожаловать в ад</title>
+  <title>Первое знакомство с folding expressions или добро пожаловать в мой мир</title>
   <meta name="description" content="Лирическое отступление">
 
   <link rel="stylesheet" href="/css/main.css">
@@ -61,7 +61,7 @@
         <div class="post">
 
   <header class="post-header">
-    <h1 class="post-title">Первое знакомство с folding expressions или добро пожаловать в ад</h1>
+    <h1 class="post-title">Первое знакомство с folding expressions или добро пожаловать в мой мир</h1>
     <p class="post-meta">Jan 1, 2016</p>
   </header>
 
@@ -69,15 +69,15 @@
     <h2 id="section">Лирическое отступление</h2>
 
 <p>Перед новым годом я зарекся перестать проверять свою почту 
-(это занимает тучу времени, ибо gmail грузится не быстро,
-да и еще всегда помимо обычных человеческих писем,
-приходит большое количество -/+ интересной рассылки да и еще
+(это занимает тучу времени, ибо gmail грузится не быстро 
+и еще всегда помимо обычных человеческих писем,
+приходит большое количество -/+ интересной рассылки, и
 пачка уведомлений от сервисов, которыми пользуюсь:
 Python-anywhere, Amazon EC2, Evernote и прочих).</p>
 
 <p>Поздним утром 1-го января после празднования Нового года меня занесло на просторы WWW в поисках интересного.
  После утраченного часа в твиттере, фейсбуке, и реддите, 
-я вспомнил о тех обещаниях, которые дал сам себе, и полез в сеть в поисках чего-то интересного.</p>
+я вспомнил о тех обещаниях, которые дал сам себе и полез в сеть в поисках чего-то интересного.</p>
 
 <p>Я забрел на страницу о clang-format, узнал о появлении новой опции AlignConsecutiveDeclarations,
 потом с горечью узнал, что у моей Федоры 23, на данный момент установлен clang-3.7 и я не могу воспользоваться этой опцией.
@@ -85,7 +85,10 @@ Python-anywhere, Amazon EC2, Evernote и прочих).</p>
 почитал еще немножко об <a href="http://clang.llvm.org/docs/AddressSanitizer.html">AddressSanitizer</a>, <a href="http://clang.llvm.org/docs/MemorySanitizer.html">MemorySanitizer</a>, <a href="http://clang.llvm.org/docs/ThreadSanitizer.html">ThreadSanitizer</a>.</p>
 
 <h2 id="section-1">Начало</h2>
-<p>Случилось так, что потом забрел на страницу <a href="http://clang.llvm.org/cxx_status.html">C++ imlementation status</a> в раздел C++1z implementation status, начал прокликивать ссылки попал <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2014/n4295.html">open-std.org</a>, а именно на предложения по поводу использования folding expressions. Авторство которого принадлежит Дрю Саттону и Ричарду Смиту.</p>
+<p>Случилось так, что потом забрел на страницу <a href="http://clang.llvm.org/cxx_status.html">C++ imlementation status</a>
+в раздел C++1z implementation status, начал прокликивать ссылки 
+и попал на <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2014/n4295.html">open-std.org</a>,
+а именно предложения по поводу использования folding expressions. Авторство которого принадлежит Дрю Саттону и Ричарду Смиту.</p>
 
 <p><code class="highlighter-rouge">
 Andrew Sutton, Richard Smith
@@ -110,7 +113,8 @@ fold-operator: one of
 </code></pre>
 </div>
 
-<p>Таким образом мы с радостью обнаруживаем, что теория может превратится в практику при использования ключа <code class="highlighter-rouge">-std=c++1z</code>. Что пора двинуться с места в каръер и написать код и потрогать руками результат.</p>
+<p>Таким образом мы с радостью обнаруживаем, что теория может превратится в практику при использования ключа <code class="highlighter-rouge">-std=c++1z</code>.
+Что ж, пора сдвинуться с места и написать код, чтобы потрогать руками результат.</p>
 
 <noscript><pre>All:
     clang++ -v
@@ -118,7 +122,7 @@ fold-operator: one of
     clang++ main.cpp -std=c++1z &amp;&amp; ./a.out &amp;&amp; rm ./a.out</pre></noscript>
 <script src="https://gist.github.com/tshev/868a065f2dcdb3fe4fa8.js"> </script>
 
-<p>Дальше, загляну в таблицу “Value of folding empty sequences”, мы можем заметить, что значением по умполчанию является истрина, таким образом, можно упростить функцию <code class="highlighter-rouge">all_true</code> и записать:</p>
+<p>Дальше, заглянув в таблицу “Value of folding empty sequences”, мы можем заметить, что значением по умполчанию является истина, таким образом, можно упростить функцию <code class="highlighter-rouge">all_true</code> и записать:</p>
 
 <div class="highlighter-rouge"><pre class="highlight"><code>template &lt;typename... Args&gt;
 bool all_true(Args... args) {
@@ -127,10 +131,11 @@ bool all_true(Args... args) {
 </code></pre>
 </div>
 
-<p>Напомню, що для использования данного функционала необходим компилятор clang-3.7, либо более новой версии. Если вы владеете <code class="highlighter-rouge">gcc version 5.3.1</code>, то вы не можете воспользоваться данным кодом, так как данная часть от C++1z в нем еще не реализована.</p>
+<p>Напомню, що для использования данного функционала необходим компилятор clang-3.7, либо более новая его версия.
+Если вы владеете <code class="highlighter-rouge">gcc version 5.3.1</code>, то вы не можете воспользоваться данным кодом, так как данная часть C++1z еще не реализована в нем.</p>
 
 <p>Итак. Прежде, чем двинуться дальше и улучшить данное решение
-(мне, например, хотелось бы вызывать данный метод для переданного предикатов, а не морочится c ручными вызовами предикатов <code class="highlighter-rouge">all(pred(x1), pred(x2)))</code>, вернемся в прошлое, а именно к C++14, а возможно и к C++14 и реализуем обозначенную выше идею, при этом воспользуемя ключевым словом constexpr, чтобы возможно было выполнять подобные вычисления на этапе компиляции, а заодно и воспользоваться <code class="highlighter-rouge">static_assert</code> для создания примитивных тестов, которые будут давать знать о себе в случае ошибки также на этапе компиляции:</p>
+(мне, например, хотелось бы вызывать данный метод для переданного предикатов, а не морочится c ручными вызовами предикатов <code class="highlighter-rouge">all(pred(x1), pred(x2)))</code>), вернемся в прошлое, а именно к C++14, а возможно и к C++11 и реализуем обозначенную выше идею, при этом воспользуемся ключевым словом constexpr, чтобы было возможно выполнять подобные вычисления на этапе компиляции, а заодно и воспользоваться <code class="highlighter-rouge">static_assert</code> для создания примитивных тестов, которые будут давать знать о себе в случае ошибки на этапе компиляции:</p>
 
 <noscript><pre>bool all() {
     return true;
@@ -169,130 +174,72 @@ int main() {
 <ul>
   <li>В примере мы имеем дело с гомогенным случаем - аргументы следующие за предикатом, имеют один и тот же тип</li>
   <li>Функция <code class="highlighter-rouge">all</code> допускает передачу аргументов разных типов</li>
-  <li>При передачи аргементов разных типов, будет выполнятся неявное преобразование типов к типу, указанному, в области определения бинарного предиката, за исключением случая использования полиморфных лямбда выражений, а также функциональных объектов, с шаблонным оператором круглых скобок</li>
-  <li>Поскольку аргументы передаются по значению, использование функции <code class="highlighter-rouge">all</code> является допустимым для объектов, которые мают достаточно малый размер. Решение о допустимых размерах объекта оставим читателю, но стоит заметить, что я бы заметил, что на мой взгляд - размер в 1-3 машинных слова вполне допустим, что позволяет вызывать функцию без существенных утрат в производительности,  связанных с копированием.</li>
+  <li>При передачи аргументов разных типов, будет выполнятся неявное преобразование типов к типу, указанному, в области определения бинарного предиката,
+за исключением случая использования полиморфных лямбда-выражений, а также функциональных объектов, с шаблонным оператором круглых скобок</li>
+  <li>Поскольку аргументы передаются по значению, использование функции <code class="highlighter-rouge">all</code> является допустимым для объектов, которые имеют достаточно малый размер.
+Решение о том, как судить о степени малости объектов оставим читателю, но стоит заметить что на мой взгляд - размер в 1-3 машинных слова вполне допустим, это позволяет вызывать функцию без существенных утрат в производительности,  связанных с копированием, а если повезет, то код вообще заинлайнится(порой это бывает сомнительным везением).</li>
 </ul>
 
-<h2 id="section-2">Добро пожаловать в ад</h2>
-<p>Давайте сделаем такой финт ушами для решение проблемы с передачей встроенных типов по констатной ссылке, поскольку нам бы хотелось их передавать по значению, а вот пользовательские типы, например вектор, - по констатной ссылке. И это можем сделать при помощи правил перегрузки функций.</p>
+<h2 id="section-2">Добро пожаловать в мой мир</h2>
+<p>Давайте сделаем финт ушами. Для решение проблемы с передачей встроенных типов
+(а эта проблема существует, поскольку нам бы хотелось передавать их по значению),
+а вот пользовательские типы, например вектор, - по констатной ссылке. И это можем это сделать при помощи правил перегрузки функций.</p>
 
 <p>Поскольку код, получился большим, пустим в дело заголовочный, файл. В коде мы применим для получения
-желаемого эффекта, воспользуемся той же техникой, что используется в STL запуска разных алгоритмов для различных видов итераторов.</p>
+желаемого эффекта, ту же технику, что используется в STL для запуска различных алгоритмов для различных видов итераторов,
+ярким тому приметром является алгоритм <code class="highlighter-rouge">std::rotate</code>.</p>
 
 <noscript><pre>All:
 	clang++ ./main.cpp -std=c++1z -Wall &amp;&amp; ./a.out &amp;&amp; rm ./a.out</pre></noscript>
 <script src="https://gist.github.com/tshev/e559e548c55fc2e78722.js"> </script>
 
-<p>И в качестве последнего штриха вернемся в настоящее и заставим данный код работать c C++14 при помощи рекурсии для шаблонов с переменным количеством аргементов.</p>
-<noscript><pre>#include &lt;type_traits&gt;
-#ifndef FOLDING_EXPRESSION_H
-#define FOLDING_EXPRESSION_H
-
-#define requires(...)
-namespace hell {
-
-struct __integral_type_label {};
-struct __not_integral_type_label {};
-
-template&lt;bool _A&gt;
-struct _integral_type_check {
-  using type = __not_integral_type_label;
-};
-
-template&lt;&gt;
-struct _integral_type_check&lt;true&gt; {
-  using type = __integral_type_label;
-};
-// integral
-template &lt;typename __Pred&gt;
-requires (Unary__Predredicate&lt;__Pred, __Args&gt;)
- inline
- constexpr
- bool __all_by_value(__Pred __pred) {
-  return true;
- }
-
-template &lt;typename __Pred, typename __Arg, typename... __Args&gt;
-requires (Unary__Predredicate&lt;__Pred, __Args&gt;)
- inline
- constexpr
- bool __all_by_value(__Pred __pred, __Arg __arg,  __Args... __args) {
-  return __pred(__arg) &amp;&amp; __all_by_value(__pred, __args...);
- }
-
-template &lt;typename __Pred, typename __Arg,  typename... __Args&gt;
-requires (Unary__Predredicate&lt;__Pred, __Arg&gt;)
- inline
- constexpr
- bool __all(__integral_type_label, __Pred __pred, __Arg __arg, __Args... __args) {
-  return __pred(__arg) &amp;&amp; __all_by_value(__pred, __args...);
- }
-
-
-// not integral
-template &lt;typename __Pred&gt;
-requires (Unary__Predredicate&lt;__Pred, __Args&gt;)
- inline
- constexpr
- bool __all_by_cref(__Pred __pred) {
-  return true;
- }
-
-template &lt;typename __Pred, typename __Arg, typename... __Args&gt;
-requires (Unary__Predredicate&lt;__Pred, __Args&gt;)
- inline
- constexpr
- bool __all_by_cref(__Pred __pred, __Arg __arg,  __Args... __args) {
-  return __pred(__arg) &amp;&amp; __all_by_cref(__pred, __args...);
- }
-
-template &lt;typename __Pred, typename __Arg,  typename... __Args&gt;
-requires (Unary__Predredicate&lt;__Pred, __Arg&gt;)
- inline
- constexpr
- bool __all(__not_integral_type_label, __Pred __pred, __Arg __arg, __Args... __args) {
-  return __pred(__arg) &amp;&amp; __all_by_cref(__pred, __args...);
- }
-
- constexpr
- inline
- bool __all_values_are_true() {
-  return true;
- }
-
-bool all_true() {
-    return true;
-}
-
-template &lt;typename __Args&gt;
-  inline
-  constexpr
-  bool all_true(__Args __args) {
-    return __Args::value;
-  }
-
-template &lt;typename __Arg, typename... __Args&gt;
-  inline
-  constexpr
-  bool all_true(__Arg __arg, __Args... __args) {
-    return __Arg::value &amp;&amp; all_true(__args...);
-  }
-
-
-
-template &lt;typename __Pred, typename... __Args&gt;
-requires (Unary__Predredicate&lt;__Pred, __Args&gt;)
- inline
- constexpr
- bool all(__Pred __pred, __Args... __args) {
-  constexpr bool flag = all_true&lt;std::is_integral&lt;__Args&gt;...&gt;(std::is_integral&lt;__Args&gt;()...);
-  typedef typename _integral_type_check&lt;flag&gt;::type T;
-  return __all(T(), __pred, __args...);
- }
-
-}
-#endif</pre></noscript>
+<p>И в качестве последнего штриха вернемся в настоящее время и заставим данный код работать c C++14 при помощи рекурсии для шаблонов с переменным количеством аргументов.</p>
+<noscript><pre>All:
+	clang++ ./main.cpp -std=c++14 -Wall &amp;&amp; ./a.out &amp;&amp; rm a.out
+</pre></noscript>
 <script src="https://gist.github.com/tshev/44c5f0338e6b3d16fb0e.js"> </script>
+
+<h2 id="section-3">Финальные замечания</h2>
+<p>Стоит заметить, что при работе с функцией <code class="highlighter-rouge">all</code>, нужно быть аккуратным с неявными преобразованиями, типов, если вы все же решите проверять предикатом аргументы разных типов</p>
+
+<h3 id="section-4">Пример ужасного использования:</h3>
+<div class="highlighter-rouge"><pre class="highlight"><code>auto check == all([](int x) { return x % 2 == 0; }, 4, 8, false);
+</code></pre>
+</div>
+
+<h3 id="section-5">Пример допустимого использования:</h3>
+<div class="highlighter-rouge"><pre class="highlight"><code>auto check == all([](auto &amp;x) {
+                            // какой-то код
+                             }, T1{}, T2{}, T1{});
+</code></pre>
+</div>
+
+<h3 id="section-6">Что в определенной степени эквивалентно записи</h3>
+<div class="highlighter-rouge"><pre class="highlight"><code>struct Pred {
+    bool operator()(const T1 &amp;x) {
+        // implementation for T1
+    }
+    bool operator()(const T2 &amp;x) {
+        // implementation for T2
+    }
+};
+auto check = all(Pred{}, T1{}, T2{})
+</code></pre>
+</div>
+
+<p>Если вы сталкивались с проблемами при неявных преобразованиях типов,
+тогда вы будете использовать реализацию, которая не приведет к сюрпризам.</p>
+
+<p>Ну и напоследок могу сказать, что можно более аккуратно ввести концепции, записав требования не только к предикатам,
+но и к аргементам, следующим за ним, и но при этом пришлось бы переопределить понятие Гомогенного(однородного) предиката, тем самым
+запретив использовать код, для списка параметров разных типов…</p>
+
+<h3 id="section-7">Как ты назовешь то, что получилось</h3>
+<p>Краткая запись гетерогенного предиката с возможностью сужения к гомогенному.</p>
+
+<p>Можно еще провести измерения производительнсоти отдельно для случаев с C++14 и C++1z, но это уже совсем другая история.</p>
+
+<p>Детальнее о концепциях можете почитать вот здесь: <a href="http://www.elementsofprogramming.com/eop-concepts.pdf">http://www.elementsofprogramming.com/eop-concepts.pdf</a></p>
 
 
   </article>

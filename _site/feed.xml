@@ -6,24 +6,163 @@
 </description>
     <link>http://tshev.org/</link>
     <atom:link href="http://tshev.org/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Fri, 01 Jan 2016 19:03:48 +0200</pubDate>
-    <lastBuildDate>Fri, 01 Jan 2016 19:03:48 +0200</lastBuildDate>
+    <pubDate>Sat, 02 Jan 2016 21:14:10 +0200</pubDate>
+    <lastBuildDate>Sat, 02 Jan 2016 21:14:10 +0200</lastBuildDate>
     <generator>Jekyll v3.0.1</generator>
     
       <item>
-        <title>Первое знакомство с folding expressions или добро пожаловать в ад</title>
+        <title>Python, дайте жалобную книгу</title>
+        <description>&lt;p&gt;Пускай перед нами стоит обычная задача написания алгоритма сортировки при помощи метода выбора,
+которая состоит в следующем&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;Определяем текущий индекс равным стартовой позици&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Если текущий индекс меньше последней позиции, находим минимальное значение в подмассиве,
+начиная с позиции текущего индекса, выполняем операцию обмена, увеличиваем текущий индекс,
+повторяем шаг 2, в противном случае алгоритм заканчивается&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h4 id=&quot;section&quot;&gt;Чего тут сложного? Где проблема?&lt;/h4&gt;
+&lt;p&gt;А дело вот в чем: “Встроенная функция нахождения минимума функции в данном алгоритме - бесполезна!”
+Из этого следует, что нам нужна функция argmin, которой в стандартной библиотеке нет.&lt;/p&gt;
+
+&lt;p&gt;Реализовать ее на самом Пайтоне не так уж сложно. Но в данном случае главной проблемой является
+продуманость того, как должны выглядеть аргументы. Из опыта С, становится очевидным, что прототи вида
+&lt;code class=&quot;highlighter-rouge&quot;&gt;long int argmin(int a[], long int length);&lt;/code&gt;, является солидным источником ошибок.&lt;/p&gt;
+
+&lt;noscript&gt;&lt;pre&gt;def less(x_value, y_value):                                                      
+    &amp;quot;&amp;quot;&amp;quot;requres Transitive(x and y)&amp;quot;&amp;quot;&amp;quot;                                                                          
+    return x_value &amp;lt; y_value 
+    
+def argmin(array, **kwargs):                                                     
+    &amp;quot;&amp;quot;&amp;quot; requires Transitive(x and y) &amp;quot;&amp;quot;&amp;quot;                                          
+    start = kwargs.get(&amp;#39;start&amp;#39;, 0)                                               
+    end = kwargs.get(&amp;#39;end&amp;#39;, len(array))                                          
+    cmp = kwargs.get(&amp;#39;cmp&amp;#39;, less)                                                
+    min_value = array[start]                                                    
+    index = start                                                                
+    while start &amp;lt; end:                                                           
+        if cmp(array[start], min_value):                                       
+            min_value = array[start]                                          
+            index = start                                                     
+        start += 1                                                            
+    return index  &lt;/pre&gt;&lt;/noscript&gt;
+&lt;script src=&quot;https://gist.github.com/tshev/9a3e0316bf5213178d40.js&quot;&gt; &lt;/script&gt;
+
+&lt;p&gt;Сначала о хорошем:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;мы можем выполнить алгоритм для любого непрерывного подмассмва&lt;/li&gt;
+  &lt;li&gt;можем использовать пользовательскую функцию сравнения&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Теперь о плохом:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;вызов функции в пайтоне дорогой, и приводит к проблемам при его использовании в линейном алгоритме&lt;/li&gt;
+  &lt;li&gt;пришлось написать новую функцию, а не воспользоваться встроенной,
+ибо функция &lt;code class=&quot;highlighter-rouge&quot;&gt;min(iterable[, key=func]) -&amp;gt; value&lt;/code&gt; возращает значение вместо индекса&lt;/li&gt;
+  &lt;li&gt;реализация argmin на Python работает более медленно, даже при сравнении со встроенной функцией,
+но делает то, что нужно&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Приведем полную реализацию:&lt;/p&gt;
+&lt;noscript&gt;&lt;pre&gt;&amp;quot;&amp;quot;&amp;quot; SORTING&amp;quot;&amp;quot;&amp;quot;
+
+def less(x_value, y_value):
+    &amp;quot;&amp;quot;&amp;quot;
+    requires Transitive(x and y)
+    &amp;quot;&amp;quot;&amp;quot;
+    return x_value &amp;lt; y_value
+
+def argmin(array, **kwargs):
+    &amp;quot;&amp;quot;&amp;quot; requires Transitive(x and y) &amp;quot;&amp;quot;&amp;quot;
+    start = kwargs.get(&amp;#39;start&amp;#39;, 0)
+    end = kwargs.get(&amp;#39;end&amp;#39;, len(array))
+    cmp = kwargs.get(&amp;#39;cmp&amp;#39;, less)
+    min_value = array[start]
+    index = start
+    while start &amp;lt; end:
+        if cmp(array[start], min_value):
+            min_value = array[start]
+            index = start
+        start += 1
+    return index
+
+def selection_sort(array, **kwargs):
+    &amp;quot;&amp;quot;&amp;quot; requres Transitive(x and y) &amp;quot;&amp;quot;&amp;quot;
+    start = kwargs.get(&amp;#39;start&amp;#39;, 0)
+    end = kwargs.get(&amp;#39;end&amp;#39;, len(array))
+    cmp = kwargs.get(&amp;#39;cmp&amp;#39;, less)
+    while start &amp;lt; end:
+        i = argmin(array, start=start, end=end, cmp=cmp)
+        array[i], array[start] = array[start], array[i]
+        start += 1
+
+def main():
+    &amp;quot;&amp;quot;&amp;quot; main &amp;quot;&amp;quot;&amp;quot;
+    x_array = list(range(5000))
+    selection_sort(x_array, start=0)
+
+if __name__ == &amp;#39;__main__&amp;#39;:
+    main()&lt;/pre&gt;&lt;/noscript&gt;
+&lt;script src=&quot;https://gist.github.com/tshev/109c1fa3f93677f8f7f3.js&quot;&gt; &lt;/script&gt;
+
+&lt;p&gt;Еще немного грустного:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;при каждой операцие инкремента индекса, создается новое целое число&lt;/li&gt;
+  &lt;li&gt;мы используем словарь для получения значений именованых аргументов&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Сравним с реализацией на C++:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;template&amp;lt;typename It&amp;gt;
+void selection_sort(It f, It l) {
+    for(; f != l; f++) {
+        auto min = std::min_element(f, l);
+        std::iter_swap(f, min);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Напоследок сообщаю результаты измерения производительнсоти на ничтожно маленьком массиве в 5000 элементов
+на моем ноутбуке:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Python справился за 3.5 секунды&lt;/li&gt;
+  &lt;li&gt;C++ с ключем -O0 справился за 0.231 секунды&lt;/li&gt;
+&lt;/ul&gt;
+
+</description>
+        <pubDate>Sat, 02 Jan 2016 12:51:21 +0200</pubDate>
+        <link>http://tshev.org/python/2016/01/02/python-problems.html</link>
+        <guid isPermaLink="true">http://tshev.org/python/2016/01/02/python-problems.html</guid>
+        
+        
+        <category>python</category>
+        
+      </item>
+    
+      <item>
+        <title>Первое знакомство с folding expressions или добро пожаловать в мой мир</title>
         <description>&lt;h2 id=&quot;section&quot;&gt;Лирическое отступление&lt;/h2&gt;
 
 &lt;p&gt;Перед новым годом я зарекся перестать проверять свою почту 
-(это занимает тучу времени, ибо gmail грузится не быстро,
-да и еще всегда помимо обычных человеческих писем,
-приходит большое количество -/+ интересной рассылки да и еще
+(это занимает тучу времени, ибо gmail грузится не быстро 
+и еще всегда помимо обычных человеческих писем,
+приходит большое количество -/+ интересной рассылки, и
 пачка уведомлений от сервисов, которыми пользуюсь:
 Python-anywhere, Amazon EC2, Evernote и прочих).&lt;/p&gt;
 
 &lt;p&gt;Поздним утром 1-го января после празднования Нового года меня занесло на просторы WWW в поисках интересного.
  После утраченного часа в твиттере, фейсбуке, и реддите, 
-я вспомнил о тех обещаниях, которые дал сам себе, и полез в сеть в поисках чего-то интересного.&lt;/p&gt;
+я вспомнил о тех обещаниях, которые дал сам себе и полез в сеть в поисках чего-то интересного.&lt;/p&gt;
 
 &lt;p&gt;Я забрел на страницу о clang-format, узнал о появлении новой опции AlignConsecutiveDeclarations,
 потом с горечью узнал, что у моей Федоры 23, на данный момент установлен clang-3.7 и я не могу воспользоваться этой опцией.
@@ -31,7 +170,10 @@ Python-anywhere, Amazon EC2, Evernote и прочих).&lt;/p&gt;
 почитал еще немножко об &lt;a href=&quot;http://clang.llvm.org/docs/AddressSanitizer.html&quot;&gt;AddressSanitizer&lt;/a&gt;, &lt;a href=&quot;http://clang.llvm.org/docs/MemorySanitizer.html&quot;&gt;MemorySanitizer&lt;/a&gt;, &lt;a href=&quot;http://clang.llvm.org/docs/ThreadSanitizer.html&quot;&gt;ThreadSanitizer&lt;/a&gt;.&lt;/p&gt;
 
 &lt;h2 id=&quot;section-1&quot;&gt;Начало&lt;/h2&gt;
-&lt;p&gt;Случилось так, что потом забрел на страницу &lt;a href=&quot;http://clang.llvm.org/cxx_status.html&quot;&gt;C++ imlementation status&lt;/a&gt; в раздел C++1z implementation status, начал прокликивать ссылки попал &lt;a href=&quot;http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2014/n4295.html&quot;&gt;open-std.org&lt;/a&gt;, а именно на предложения по поводу использования folding expressions. Авторство которого принадлежит Дрю Саттону и Ричарду Смиту.&lt;/p&gt;
+&lt;p&gt;Случилось так, что потом забрел на страницу &lt;a href=&quot;http://clang.llvm.org/cxx_status.html&quot;&gt;C++ imlementation status&lt;/a&gt;
+в раздел C++1z implementation status, начал прокликивать ссылки 
+и попал на &lt;a href=&quot;http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2014/n4295.html&quot;&gt;open-std.org&lt;/a&gt;,
+а именно предложения по поводу использования folding expressions. Авторство которого принадлежит Дрю Саттону и Ричарду Смиту.&lt;/p&gt;
 
 &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;
 Andrew Sutton, Richard Smith
@@ -56,7 +198,8 @@ fold-operator: one of
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;p&gt;Таким образом мы с радостью обнаруживаем, что теория может превратится в практику при использования ключа &lt;code class=&quot;highlighter-rouge&quot;&gt;-std=c++1z&lt;/code&gt;. Что пора двинуться с места в каръер и написать код и потрогать руками результат.&lt;/p&gt;
+&lt;p&gt;Таким образом мы с радостью обнаруживаем, что теория может превратится в практику при использования ключа &lt;code class=&quot;highlighter-rouge&quot;&gt;-std=c++1z&lt;/code&gt;.
+Что ж, пора сдвинуться с места и написать код, чтобы потрогать руками результат.&lt;/p&gt;
 
 &lt;noscript&gt;&lt;pre&gt;All:
     clang++ -v
@@ -64,7 +207,7 @@ fold-operator: one of
     clang++ main.cpp -std=c++1z &amp;amp;&amp;amp; ./a.out &amp;amp;&amp;amp; rm ./a.out&lt;/pre&gt;&lt;/noscript&gt;
 &lt;script src=&quot;https://gist.github.com/tshev/868a065f2dcdb3fe4fa8.js&quot;&gt; &lt;/script&gt;
 
-&lt;p&gt;Дальше, загляну в таблицу “Value of folding empty sequences”, мы можем заметить, что значением по умполчанию является истрина, таким образом, можно упростить функцию &lt;code class=&quot;highlighter-rouge&quot;&gt;all_true&lt;/code&gt; и записать:&lt;/p&gt;
+&lt;p&gt;Дальше, заглянув в таблицу “Value of folding empty sequences”, мы можем заметить, что значением по умполчанию является истина, таким образом, можно упростить функцию &lt;code class=&quot;highlighter-rouge&quot;&gt;all_true&lt;/code&gt; и записать:&lt;/p&gt;
 
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;template &amp;lt;typename... Args&amp;gt;
 bool all_true(Args... args) {
@@ -73,10 +216,11 @@ bool all_true(Args... args) {
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;p&gt;Напомню, що для использования данного функционала необходим компилятор clang-3.7, либо более новой версии. Если вы владеете &lt;code class=&quot;highlighter-rouge&quot;&gt;gcc version 5.3.1&lt;/code&gt;, то вы не можете воспользоваться данным кодом, так как данная часть от C++1z в нем еще не реализована.&lt;/p&gt;
+&lt;p&gt;Напомню, що для использования данного функционала необходим компилятор clang-3.7, либо более новая его версия.
+Если вы владеете &lt;code class=&quot;highlighter-rouge&quot;&gt;gcc version 5.3.1&lt;/code&gt;, то вы не можете воспользоваться данным кодом, так как данная часть C++1z еще не реализована в нем.&lt;/p&gt;
 
 &lt;p&gt;Итак. Прежде, чем двинуться дальше и улучшить данное решение
-(мне, например, хотелось бы вызывать данный метод для переданного предикатов, а не морочится c ручными вызовами предикатов &lt;code class=&quot;highlighter-rouge&quot;&gt;all(pred(x1), pred(x2)))&lt;/code&gt;, вернемся в прошлое, а именно к C++14, а возможно и к C++14 и реализуем обозначенную выше идею, при этом воспользуемя ключевым словом constexpr, чтобы возможно было выполнять подобные вычисления на этапе компиляции, а заодно и воспользоваться &lt;code class=&quot;highlighter-rouge&quot;&gt;static_assert&lt;/code&gt; для создания примитивных тестов, которые будут давать знать о себе в случае ошибки также на этапе компиляции:&lt;/p&gt;
+(мне, например, хотелось бы вызывать данный метод для переданного предикатов, а не морочится c ручными вызовами предикатов &lt;code class=&quot;highlighter-rouge&quot;&gt;all(pred(x1), pred(x2)))&lt;/code&gt;), вернемся в прошлое, а именно к C++14, а возможно и к C++11 и реализуем обозначенную выше идею, при этом воспользуемся ключевым словом constexpr, чтобы было возможно выполнять подобные вычисления на этапе компиляции, а заодно и воспользоваться &lt;code class=&quot;highlighter-rouge&quot;&gt;static_assert&lt;/code&gt; для создания примитивных тестов, которые будут давать знать о себе в случае ошибки на этапе компиляции:&lt;/p&gt;
 
 &lt;noscript&gt;&lt;pre&gt;bool all() {
     return true;
@@ -115,130 +259,72 @@ int main() {
 &lt;ul&gt;
   &lt;li&gt;В примере мы имеем дело с гомогенным случаем - аргументы следующие за предикатом, имеют один и тот же тип&lt;/li&gt;
   &lt;li&gt;Функция &lt;code class=&quot;highlighter-rouge&quot;&gt;all&lt;/code&gt; допускает передачу аргументов разных типов&lt;/li&gt;
-  &lt;li&gt;При передачи аргементов разных типов, будет выполнятся неявное преобразование типов к типу, указанному, в области определения бинарного предиката, за исключением случая использования полиморфных лямбда выражений, а также функциональных объектов, с шаблонным оператором круглых скобок&lt;/li&gt;
-  &lt;li&gt;Поскольку аргументы передаются по значению, использование функции &lt;code class=&quot;highlighter-rouge&quot;&gt;all&lt;/code&gt; является допустимым для объектов, которые мают достаточно малый размер. Решение о допустимых размерах объекта оставим читателю, но стоит заметить, что я бы заметил, что на мой взгляд - размер в 1-3 машинных слова вполне допустим, что позволяет вызывать функцию без существенных утрат в производительности,  связанных с копированием.&lt;/li&gt;
+  &lt;li&gt;При передачи аргументов разных типов, будет выполнятся неявное преобразование типов к типу, указанному, в области определения бинарного предиката,
+за исключением случая использования полиморфных лямбда-выражений, а также функциональных объектов, с шаблонным оператором круглых скобок&lt;/li&gt;
+  &lt;li&gt;Поскольку аргументы передаются по значению, использование функции &lt;code class=&quot;highlighter-rouge&quot;&gt;all&lt;/code&gt; является допустимым для объектов, которые имеют достаточно малый размер.
+Решение о том, как судить о степени малости объектов оставим читателю, но стоит заметить что на мой взгляд - размер в 1-3 машинных слова вполне допустим, это позволяет вызывать функцию без существенных утрат в производительности,  связанных с копированием, а если повезет, то код вообще заинлайнится(порой это бывает сомнительным везением).&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;h2 id=&quot;section-2&quot;&gt;Добро пожаловать в ад&lt;/h2&gt;
-&lt;p&gt;Давайте сделаем такой финт ушами для решение проблемы с передачей встроенных типов по констатной ссылке, поскольку нам бы хотелось их передавать по значению, а вот пользовательские типы, например вектор, - по констатной ссылке. И это можем сделать при помощи правил перегрузки функций.&lt;/p&gt;
+&lt;h2 id=&quot;section-2&quot;&gt;Добро пожаловать в мой мир&lt;/h2&gt;
+&lt;p&gt;Давайте сделаем финт ушами. Для решение проблемы с передачей встроенных типов
+(а эта проблема существует, поскольку нам бы хотелось передавать их по значению),
+а вот пользовательские типы, например вектор, - по констатной ссылке. И это можем это сделать при помощи правил перегрузки функций.&lt;/p&gt;
 
 &lt;p&gt;Поскольку код, получился большим, пустим в дело заголовочный, файл. В коде мы применим для получения
-желаемого эффекта, воспользуемся той же техникой, что используется в STL запуска разных алгоритмов для различных видов итераторов.&lt;/p&gt;
+желаемого эффекта, ту же технику, что используется в STL для запуска различных алгоритмов для различных видов итераторов,
+ярким тому приметром является алгоритм &lt;code class=&quot;highlighter-rouge&quot;&gt;std::rotate&lt;/code&gt;.&lt;/p&gt;
 
 &lt;noscript&gt;&lt;pre&gt;All:
 	clang++ ./main.cpp -std=c++1z -Wall &amp;amp;&amp;amp; ./a.out &amp;amp;&amp;amp; rm ./a.out&lt;/pre&gt;&lt;/noscript&gt;
 &lt;script src=&quot;https://gist.github.com/tshev/e559e548c55fc2e78722.js&quot;&gt; &lt;/script&gt;
 
-&lt;p&gt;И в качестве последнего штриха вернемся в настоящее и заставим данный код работать c C++14 при помощи рекурсии для шаблонов с переменным количеством аргементов.&lt;/p&gt;
-&lt;noscript&gt;&lt;pre&gt;#include &amp;lt;type_traits&amp;gt;
-#ifndef FOLDING_EXPRESSION_H
-#define FOLDING_EXPRESSION_H
-
-#define requires(...)
-namespace hell {
-
-struct __integral_type_label {};
-struct __not_integral_type_label {};
-
-template&amp;lt;bool _A&amp;gt;
-struct _integral_type_check {
-  using type = __not_integral_type_label;
-};
-
-template&amp;lt;&amp;gt;
-struct _integral_type_check&amp;lt;true&amp;gt; {
-  using type = __integral_type_label;
-};
-// integral
-template &amp;lt;typename __Pred&amp;gt;
-requires (Unary__Predredicate&amp;lt;__Pred, __Args&amp;gt;)
- inline
- constexpr
- bool __all_by_value(__Pred __pred) {
-  return true;
- }
-
-template &amp;lt;typename __Pred, typename __Arg, typename... __Args&amp;gt;
-requires (Unary__Predredicate&amp;lt;__Pred, __Args&amp;gt;)
- inline
- constexpr
- bool __all_by_value(__Pred __pred, __Arg __arg,  __Args... __args) {
-  return __pred(__arg) &amp;amp;&amp;amp; __all_by_value(__pred, __args...);
- }
-
-template &amp;lt;typename __Pred, typename __Arg,  typename... __Args&amp;gt;
-requires (Unary__Predredicate&amp;lt;__Pred, __Arg&amp;gt;)
- inline
- constexpr
- bool __all(__integral_type_label, __Pred __pred, __Arg __arg, __Args... __args) {
-  return __pred(__arg) &amp;amp;&amp;amp; __all_by_value(__pred, __args...);
- }
-
-
-// not integral
-template &amp;lt;typename __Pred&amp;gt;
-requires (Unary__Predredicate&amp;lt;__Pred, __Args&amp;gt;)
- inline
- constexpr
- bool __all_by_cref(__Pred __pred) {
-  return true;
- }
-
-template &amp;lt;typename __Pred, typename __Arg, typename... __Args&amp;gt;
-requires (Unary__Predredicate&amp;lt;__Pred, __Args&amp;gt;)
- inline
- constexpr
- bool __all_by_cref(__Pred __pred, __Arg __arg,  __Args... __args) {
-  return __pred(__arg) &amp;amp;&amp;amp; __all_by_cref(__pred, __args...);
- }
-
-template &amp;lt;typename __Pred, typename __Arg,  typename... __Args&amp;gt;
-requires (Unary__Predredicate&amp;lt;__Pred, __Arg&amp;gt;)
- inline
- constexpr
- bool __all(__not_integral_type_label, __Pred __pred, __Arg __arg, __Args... __args) {
-  return __pred(__arg) &amp;amp;&amp;amp; __all_by_cref(__pred, __args...);
- }
-
- constexpr
- inline
- bool __all_values_are_true() {
-  return true;
- }
-
-bool all_true() {
-    return true;
-}
-
-template &amp;lt;typename __Args&amp;gt;
-  inline
-  constexpr
-  bool all_true(__Args __args) {
-    return __Args::value;
-  }
-
-template &amp;lt;typename __Arg, typename... __Args&amp;gt;
-  inline
-  constexpr
-  bool all_true(__Arg __arg, __Args... __args) {
-    return __Arg::value &amp;amp;&amp;amp; all_true(__args...);
-  }
-
-
-
-template &amp;lt;typename __Pred, typename... __Args&amp;gt;
-requires (Unary__Predredicate&amp;lt;__Pred, __Args&amp;gt;)
- inline
- constexpr
- bool all(__Pred __pred, __Args... __args) {
-  constexpr bool flag = all_true&amp;lt;std::is_integral&amp;lt;__Args&amp;gt;...&amp;gt;(std::is_integral&amp;lt;__Args&amp;gt;()...);
-  typedef typename _integral_type_check&amp;lt;flag&amp;gt;::type T;
-  return __all(T(), __pred, __args...);
- }
-
-}
-#endif&lt;/pre&gt;&lt;/noscript&gt;
+&lt;p&gt;И в качестве последнего штриха вернемся в настоящее время и заставим данный код работать c C++14 при помощи рекурсии для шаблонов с переменным количеством аргументов.&lt;/p&gt;
+&lt;noscript&gt;&lt;pre&gt;All:
+	clang++ ./main.cpp -std=c++14 -Wall &amp;amp;&amp;amp; ./a.out &amp;amp;&amp;amp; rm a.out
+&lt;/pre&gt;&lt;/noscript&gt;
 &lt;script src=&quot;https://gist.github.com/tshev/44c5f0338e6b3d16fb0e.js&quot;&gt; &lt;/script&gt;
+
+&lt;h2 id=&quot;section-3&quot;&gt;Финальные замечания&lt;/h2&gt;
+&lt;p&gt;Стоит заметить, что при работе с функцией &lt;code class=&quot;highlighter-rouge&quot;&gt;all&lt;/code&gt;, нужно быть аккуратным с неявными преобразованиями, типов, если вы все же решите проверять предикатом аргументы разных типов&lt;/p&gt;
+
+&lt;h3 id=&quot;section-4&quot;&gt;Пример ужасного использования:&lt;/h3&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;auto check == all([](int x) { return x % 2 == 0; }, 4, 8, false);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h3 id=&quot;section-5&quot;&gt;Пример допустимого использования:&lt;/h3&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;auto check == all([](auto &amp;amp;x) {
+                            // какой-то код
+                             }, T1{}, T2{}, T1{});
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h3 id=&quot;section-6&quot;&gt;Что в определенной степени эквивалентно записи&lt;/h3&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;struct Pred {
+    bool operator()(const T1 &amp;amp;x) {
+        // implementation for T1
+    }
+    bool operator()(const T2 &amp;amp;x) {
+        // implementation for T2
+    }
+};
+auto check = all(Pred{}, T1{}, T2{})
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Если вы сталкивались с проблемами при неявных преобразованиях типов,
+тогда вы будете использовать реализацию, которая не приведет к сюрпризам.&lt;/p&gt;
+
+&lt;p&gt;Ну и напоследок могу сказать, что можно более аккуратно ввести концепции, записав требования не только к предикатам,
+но и к аргементам, следующим за ним, и но при этом пришлось бы переопределить понятие Гомогенного(однородного) предиката, тем самым
+запретив использовать код, для списка параметров разных типов…&lt;/p&gt;
+
+&lt;h3 id=&quot;section-7&quot;&gt;Как ты назовешь то, что получилось&lt;/h3&gt;
+&lt;p&gt;Краткая запись гетерогенного предиката с возможностью сужения к гомогенному.&lt;/p&gt;
+
+&lt;p&gt;Можно еще провести измерения производительнсоти отдельно для случаев с C++14 и C++1z, но это уже совсем другая история.&lt;/p&gt;
+
+&lt;p&gt;Детальнее о концепциях можете почитать вот здесь: &lt;a href=&quot;http://www.elementsofprogramming.com/eop-concepts.pdf&quot;&gt;http://www.elementsofprogramming.com/eop-concepts.pdf&lt;/a&gt;&lt;/p&gt;
 
 </description>
         <pubDate>Fri, 01 Jan 2016 12:51:21 +0200</pubDate>
