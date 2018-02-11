@@ -1,0 +1,86 @@
+\documentclass[a4paper,12pt,final]{extreport}
+\usepackage[%
+    left=0.50in,%
+    right=0.50in,%
+    top=0.50in,%
+    bottom=1.0in,%
+    paperheight=11in,%
+    paperwidth=8.5in%
+]{geometry}%
+\usepackage{geometry}
+\usepackage{adjustbox}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=blue,
+}
+\usepackage{multirow}
+\usepackage{makecell}
+\usepackage{fontspec}
+\newcounter{tottables}
+\usepackage{xltxtra} 
+\setcounter{secnumdepth}{0}
+\renewcommand\theadalign{bc}
+\renewcommand\theadfont{\bfseries}
+\renewcommand\theadgape{\Gape[4pt]}
+\renewcommand\cellgape{\Gape[4pt]}
+\pagenumbering{gobble}
+
+\begin{document}
+\section{Taras Shevchenko}
+\subsection{Executive summary}
+\begin{enumerate}
+  \item Performance oriented design of aplications.
+  \item Strong understading of algorithms, networking, systems architecture and end-user experience.
+  \item Programming in the Linux environment (user space).
+  \item Strong in-depth skills in STL, C++, Python, general-purpose algorithms and generic programming.
+  \item Understanding of low-level details related to compilers, interpreters and column-store databases.
+  \item In-breadth and in-depth understanding of Open Source software facilities.
+\end{enumerate}
+
+\subsection{The last industrial experience}
+\subsubsection{Rails Reactor (Since 2016)}
+\begin{itemize}
+  \item Negotiations with clients.
+  \item Implemented a few client-side and server-side API in different programming languages for e-commerce services.
+  \item Applied Guided Local Search algorithm for solving advanced modification
+        of the Vehicle Routing Problem and implemented a related application
+        for end users which generates appropriate KML-file.
+  \item Created an Machine Learning algorithm for Ideal Customer Profile evaluation.
+  \item Implemented in React a cross-browser extension for selling products.
+\end{itemize}
+
+\subsection{Education}
+\begin{tabular}
+{|c | c | c| c|}
+\hline
+\thead{Institution} & \thead{Degree} & \thead{Specialization} & \thead{Thesis} \\
+\hline
+\multirow{3}{*}{
+\makecell{
+Insitute for Applied\\
+System Analysis at NTUU \\
+Kyiv Polytechnic Institute
+}
+} & \makecell{Master's} & \makecell{System Analysis and \\ Control Theory} & \makecell{Muldimodal Search System\\ ~}\\
+                \cline{2-4}
+  & \makecell{Bachelor's} & \makecell{Artificial Intelligence} & \makecell{Distributed Search Relevance Evaluation\\ ~ } \\
+\hline
+\end{tabular}
+\subsection{Other information and activities}
+\begin{itemize}
+  \item Solid background in Mathematics.
+  \item Production experience with at least 6 programming languages.
+  \item ACM ICPC 2017 semifinilist.
+\end{itemize}
+\subsection{Contacts}
+\begin{tabular}
+{c  c  c c  c c  c c}
+\thead{Github:} & \href{https://github.com/tshev}{tshev} &
+\thead{Skype:}  & tshev.com &
+\thead{LinkedIn:} & \href{http://bit.ly/1SblWF4}{Taras Shevchenko} &
+\thead{Location:} & Kyiv, Ukraine
+\end{tabular}
+\end{document}
