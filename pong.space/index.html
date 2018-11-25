@@ -1,0 +1,457 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Ping-Pong</title>
+  <script src="./pixi/pixi.js"></script>
+</head>
+<body>
+<h1>This project is under development</h1>
+<div>
+    <div id="ping-pong" style="width: 800px; height: 600px; float: left"></div>
+    <div style="float: left;">
+        <table>
+        <tr><td>Record</td><td><span class="data" id="ping-pong-record"></span></td></tr>
+        <tr><td>Lifes</td><td><span class="data" id="ping-pong-lifes"></span></td></tr>
+        <tr><td>Points</td><td><span class="data" id="ping-pong-points"></span></td></tr>
+        </table>
+    </div>
+</div>
+
+<script type="text/javascript">
+function clamp(x, left, right) {
+    if (x > right) {
+        return right;
+    }
+    if (x < left) {
+        return left;
+    }
+    return x;
+}
+
+function absPlus(x, delta) {
+    if (x < 0) { 
+        let result = x - delta;
+        if (result >= 0) { return 0; }
+        return result;
+    }
+    let result = x + delta;
+    if (result < 0) { return 0; }
+    return result;
+}
+
+class KeyBoardListener {
+    constructor(player) {
+        this.player = player;
+        this.active = false;
+        this.state = this.initialState();
+    }
+
+    initialState() {
+        return {
+
+        };
+    }
+
+    run() {
+        if (this.active) {
+            return false;
+        }
+        this.active = true;
+        document.addEventListener("keydown", (event) => this.onKeyDown(event));
+    }
+
+    onKeyDown(event) {
+        const acceleration = 1;
+        const player = this.player;
+        if (event.keyCode == 39 /* arrow right */) {
+            player.setX(player.getX() + player.velocityKeyPress)
+        } else if (event.keyCode == 37 /* arrow right */) {
+            player.setX(player.getX() - player.velocityKeyPress)
+        }
+    }
+
+}
+
+class PongPoint {
+    constructor(x, y, r, isActive) {
+        this.base = PIXI.Sprite.fromImage('images/ball-0.svg');
+        this.setX(x);
+        this.setY(x);
+        this.setR(x);
+        this.isActive = isActive;
+    }
+
+    setX(x) {
+        this.base.x = x;
+    }
+
+    setY(y) {
+        this.base.y = y;
+    }
+
+    setWH(width, height) {
+        this.base.width = width;
+        this.base.height = height;
+    }
+
+    setR(r) {
+        var t = 2 * r;
+        this.setWH(r);
+    }
+};
+
+function collideBallRect(ball, rect) {
+    const x0 = ball.getX();
+    const y0 = ball.getY();
+    const r0 = ball.getW() / 2;
+
+    const x1 = rect.getX();
+    const y1 = rect.getY();
+    const w = rect.getW() / 2;
+    const h = rect.getH() / 2;
+    return (Math.abs(x0 - x1) < r0 + w && Math.abs(y0 - y1) < r0 + h);
+}
+
+function randomBalls(n, r, w, h) {
+    let result = [];
+    for (let i = 0; i != n; ++i) {
+        result.push(new PongPoint(Math.random() * w, Math.random() * h), true); 
+    }
+    return result;
+}
+
+class PingPongTicker {
+    constructor(board) {
+        this.board = board;
+        this.initBall(this.board.ball);
+        this.initPlayers(this.board)
+        this.keyboard = new KeyBoardListener(this.getPlayer0());
+        const r = 30;
+        const n = 10;
+        this.staticObsticles = randomBalls(n, r, this.board.width, this.board.height);
+
+        this.lifesInitial = 10;
+        this.points = 0;
+        this.lifes = this.lifesInitial;
+        this.record = 0;
+
+        this.domPoints = document.getElementById("ping-pong-points");
+        this.domLifes = document.getElementById("ping-pong-lifes");
+        this.domRecord = document.getElementById("ping-pong-record");
+
+        this.domPoints.innerHTML = this.points;
+        this.domRecord.innerHTML = this.record;
+        this.domLifes.innerHTML = this.lifes;
+
+        this.clientX = undefined;
+        this.clientY = undefined;
+
+
+        let self = this;
+
+        let body = document.getElementById("ping-pong");
+        body = document;
+        body.onmousemove = function(event) {
+            if (self.clientX === undefined) {
+                self.clientX = event.clientX;
+            }
+            let player0 = self.board.player0;
+            player0.setX(board.player0.getX() - self.clientX + event.clientX);
+            self.clientX = event.clientX;
+        }
+    }
+    
+    initBall(ball) {
+        ball.velocityX = 6;
+        ball.velocityY = 6;
+        ball.velocityA = 0.01;
+    }
+
+    initPlayers(board) {
+        this.board.player0.velocityKeyPress = 30;
+    }
+
+    getBall() {
+        return this.board.ball;
+    }
+
+    getPlayer0() {
+        return this.board.player0;
+    }
+    
+    next(delta) {
+        this.keyboard.run();
+        const offset = 15;
+        let board = this.board;
+        let ball = this.getBall();
+        let player0 = this.getPlayer0();
+
+        if (collideBallRect(ball, player0)) {
+            ball.velocityX = ball.velocityX;
+            ball.velocityY = -ball.velocityY;
+        } else if (ball.getY() <= offset) {
+            ball.setXY(board.width / 2, board.height - offset);
+            this.lifes -= 1;
+        } else {
+            if (ball.getX() > board.width - offset || ball.getX() < offset) {
+                ball.velocityX = -ball.velocityX;
+                this.points += 1;
+            }
+
+            if (ball.getY() > board.height - offset || ball.getY() < offset) {
+                ball.velocityY = -ball.velocityY;
+                this.points += 1;
+            }
+        }
+
+        if (this.points > this.record) {
+            this.record = this.points;
+        }
+
+        if (this.lifes < 1) {
+            this.lifes = this.lifesInitial;
+            this.points = 0;
+        }
+
+        this.domPoints.innerHTML = this.points;
+        this.domRecord.innerHTML = this.record;
+        this.domLifes.innerHTML = this.lifes;
+
+        player0.setX(clamp(player0.getX(), 0, this.board.width));
+
+        if (player0.getX() == 0 || player0.getY() == this.board.width) {
+            player0.velocityX = 0;
+        }
+
+        ball.moveAll(delta);
+        player0.moveAll(delta);
+    }
+}
+
+
+
+class Player {
+    constructor() {
+        this.base = PIXI.Sprite.fromImage("images/UK.png");
+        this.accelerationX = 0;
+        this.accelerationY = 0;
+        this.accelerationA = 0;
+        this.velocityX = 0;
+        this.velocityY = 0;
+        this.velocityA = 0;
+        this.velocityKeyPress = 0;
+        this.setAnchor(0.5);
+        this.weight = 0;
+    }
+
+    setAnchor(x) {
+        this.base.anchor.set(x);
+    }
+
+    getX() {
+        return this.base.x;
+    }
+
+    getY() {
+        return this.base.y;
+    }
+
+    getW() {
+        return this.base.width;
+    }
+
+    getH() {
+        return this.base.height;
+    }
+
+    setWH(width, height) {
+        this.base.width = width;
+        this.base.height = height;
+    }
+
+    getR() {
+        return this.base.width / 2;
+    }
+
+    setX(x) {
+        this.base.x = x;
+    }
+
+    setY(y) {
+        this.base.y = y;
+    }
+
+    setXY(x, y) {
+        this.base.x = x;
+        this.base.y = y;
+    }
+
+    setWH(width, height) {
+        this.base.width = width;
+        this.base.height = height;
+    }
+
+    setXY(x, y) {
+        this.base.x = x;
+        this.base.y = y;
+    }
+
+    setAnchor(x) {
+        this.base.anchor.set(x);
+    }
+
+    moveAll(timedelta) {
+        this.base.x += this.velocityX * timedelta;
+        this.base.y += this.velocityY * timedelta;
+        this.base.rotation += this.velocityA * timedelta;
+        this.velocityX += this.accelerationX * timedelta;
+        this.velocityY += this.accelerationY * timedelta;
+        this.velocityA += this.accelerationA * timedelta;
+    }
+};
+
+class Ball {
+    constructor() {
+        this.base = PIXI.Sprite.fromImage('images/ball-1.svg');
+        this.accelerationX = 0;
+        this.accelerationY = 0;
+        this.accelerationA = 0;
+        this.velocityX = 0;
+        this.velocityY = 0;
+        this.velocityA = 0;
+        this.setAnchor(0.5);
+        this.weight = 0;
+        // this.rotation
+    }
+
+    setAnchor(x) {
+        this.base.anchor.set(x);
+    }
+
+    getX() {
+        return this.base.x;
+    }
+
+    getY() {
+        return this.base.y;
+    }
+
+    setWH(width, height) {
+        this.base.width = width;
+        this.base.height = height;
+    }
+
+    getR() {
+        return this.base.width / 2;
+    }
+
+    getW() {
+        return this.base.width / 2;
+    }
+
+    getH() {
+        return this.base.height / 2;
+    }
+
+    setXY(x, y) {
+        this.base.x = x;
+        this.base.y = y;
+    }
+
+    moveAll(timedelta) {
+        this.base.x += this.velocityX * timedelta;
+        this.base.y += this.velocityY * timedelta;
+        this.base.rotation += this.velocityA * timedelta;
+        this.velocityX += this.accelerationX * timedelta;
+        this.velocityY += this.accelerationY * timedelta;
+        this.velocityA += this.accelerationA * timedelta;
+    }
+
+    collisionWithBall(ball) {
+        const a0 = this.getX();
+        const b0 = this.getY();
+        const r0 = this.getR();
+        const a1 = ball.getX();
+        const b1 = ball.getY();
+        const r1 = ball.getR();
+        const t0 = a0 - a1;
+        const t1 = (r1 * r1 - r0 * r0) + (b0 * b0 - b1 * b1);
+        const t2 = 2 * (b1 - b0)
+        const m = 4 * t0 * t0 - t2 * t2;
+        const n = 2 * t1 * t2 + 8 * t0 * b0;
+        const k = 4 * t0 * t0 * b0 * b0 + 4 * t0 * t0 + r0 * r0 - t1 * t1;
+        return n * n - 4 * m * k > 0;
+    }
+};
+
+class Board {
+    constructor(app) {
+        this.width = 800;
+        this.height = 600;
+
+        this.ball = new Ball();
+        this.ball.setWH(30, 30);
+        this.ball.setXY(app.screen.width / 2, app.screen.height / 2);
+
+
+        this.player0 = new Player();
+        this.player0.setWH(80, 45);
+        this.player0.setXY(app.screen.width / 2, this.player0.getH() / 2);
+    }
+
+    register(stage) {
+        stage.addChild(this.ball.base);
+        stage.addChild(this.player0.base);
+        // stage.addChild(this.player1.base);
+    }
+};
+
+class HardWare {
+    constructor() {
+        this.type = "WebGL"
+        if(!PIXI.utils.isWebGLSupported()){
+          this.type = "canvas"
+        }
+        this.width = 800;
+        this.height = 600;
+    }
+}
+
+class PingPong {
+    constructor(hardware) {
+        this.hardware = hardware;
+        this.app = new PIXI.Application({
+            width: hardware.width,
+            height: hardware.height,
+            backgroundColor : 0x1099bb
+        });
+    }
+
+
+    draw(element) {
+        //PIXI.utils.sayHello(this.type)
+        let board = new Board(this.app);
+        board.register(this.app.stage);
+        let ticker = new PingPongTicker(board)
+        this.app.ticker.add((x) => ticker.next(x));
+        element.appendChild(this.app.view);
+    }
+};
+let hardware = new HardWare;
+let app = new PingPong(hardware);
+app.draw(document.getElementById("ping-pong"));
+</script>
+<style>
+#ping-pong {
+    background: #3333FF;
+    width: 800px;
+    height: 600px;
+    padding: 0;
+}
+.data {
+    font-weight: bold;
+}
+</style>
+</body>
+</html>
