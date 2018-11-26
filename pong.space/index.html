@@ -163,8 +163,8 @@ class PingPongTicker {
     }
     
     initBall(ball) {
-        ball.velocityX = 6;
-        ball.velocityY = 6;
+        ball.velocityX = Math.random() * 5 + 3;
+        ball.velocityY = Math.random() * 5 + 3;
         ball.velocityA = 0.01;
     }
 
@@ -192,6 +192,7 @@ class PingPongTicker {
             ball.velocityY = -ball.velocityY;
         } else if (ball.getY() <= offset) {
             ball.setXY(board.width / 2, board.height - offset);
+            this.initBall(ball);
             this.lifes -= 1;
         } else {
             if (ball.getX() > board.width - offset || ball.getX() < offset) {
