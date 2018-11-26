@@ -161,10 +161,12 @@ class PingPongTicker {
             self.clientX = event.clientX;
         }
         let handleMove = function(event) {
-            var touches = evt.changedTouches;
+            var touches = event.changedTouches;
+            console.log(touches);
             for (var i = 0; i < touches.length - 1; i++) {
               let delta = touches[i + 1].pageX - touches[i].pageX;
               player0.setX(board.player0.getX() + delta);
+              console.log(touches);
             }
         }
         body.addEventListener("touchmove", handleMove, false);
