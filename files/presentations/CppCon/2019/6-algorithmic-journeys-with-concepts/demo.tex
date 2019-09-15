@@ -1,0 +1,378 @@
+\documentclass[10pt]{beamer}
+\usepackage{listings}
+
+\usepackage{amsmath}
+\usepackage{nccmath}
+%\usepackage{showframe}
+\usepackage{amssymb} 
+\usetheme[progressbar=frametitle]{metropolis}
+\usepackage{appendixnumberbeamer}
+
+\usepackage{booktabs}
+\usepackage[scale=2]{ccicons}
+
+\usepackage{pgfplots}
+\usepgfplotslibrary{dateplot}
+
+\usepackage{xspace}
+\newcommand{\themename}{\textbf{\textsc{metropolis}}\xspace}
+
+\title{6 Algorithmic Journeys with Concepts}
+%\subtitle{Generic algorithms and performance}
+% \date{\today}
+\date{}
+\author{Taras Shevchenko}
+\institute{Rails Reactor / Giphy}
+% \titlegraphic{\hfill\includegraphics[height=1.5cm]{logo.pdf}}
+
+\begin{document}
+
+\maketitle
+
+\begin{frame}{Table of contents}
+  \setbeamertemplate{section in toc}[sections numbered]
+  \tableofcontents[hideallsubsections]
+\end{frame}
+
+
+\begin{frame}{The Software Industry is Not Industrialized}
+    \begin{columns}
+        \begin{column}{0.6\textwidth}
+			Software components (routines), to be widely applicable to
+			different machines and users, should be available in families arranged
+			according to precision, robustness, generality and time-space performance.
+        \end{column}
+        \begin{column}{0.4\textwidth}  %%<--- here
+                \begin{center}
+					\includegraphics[height=5cm]{images/doug_mcilroy.jpg}
+                \end{center}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Periodic Table}
+    \begin{columns}
+        \begin{column}{0.6\textwidth}
+			\begin{figure}
+				\includegraphics[height=4cm]{images/periodic_table.jpg}
+				\caption{A Russian periodic table based on Dmitri Mendeleyev's original table of 1869.}
+			\end{figure}
+        \end{column}
+        \begin{column}{0.4\textwidth}  %%<--- here
+                \begin{center}
+					\includegraphics[height=5cm]{images/mendeleev.jpg}
+                \end{center}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+
+
+\begin{frame}{Species Plantarum}
+    \begin{columns}
+        \begin{column}{0.6\textwidth}
+			Lists every species of plant known at the time, classified into genera. It is the first work to consistently apply binomial names and was the starting point for the naming of plants.
+        \end{column}
+        \begin{column}{0.4\textwidth}  %%<--- here
+                \begin{center}
+					\includegraphics[height=5cm]{images/LinnaeusWeddingPortrait.jpg}
+                \end{center}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+
+\begin{frame}{Elements}
+	\begin{columns}
+        \begin{column}{0.6\textwidth}
+			\begin{enumerate}
+				\item Definitions
+				\item Postulates
+				\item Common notions
+			\end{enumerate}
+		\end{column}
+        \begin{column}{0.4\textwidth}  %%<--- here
+                \begin{center}
+					\includegraphics[height=5cm]{images/euclid.jpg}
+                \end{center}
+        \end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Common Notions}
+\begin{enumerate}
+	\item Things which are equal to the same thing are also equal to one other.
+	\item If equals be added to equals, the wholes are equal.
+	\item If quals be subructed from equals, the remainders are equal.
+	\item Things which coincide with one another are equal to one another.
+	\item The whole is greater than the part.
+\end{enumerate}
+\end{frame}
+
+
+
+\begin{frame}{Basic idea}
+\begin{block}{}
+The essence of generic programming lies in the idea of concepts. A concept is a way of describing a family of related object types.
+\end{block}
+\begin{center}
+    \begin{tabular}{ | p{1.5cm} | l | l | p{3cm} |}
+    \hline
+    \textbf{Natural Science} & \textbf{Mathematics} & \textbf{Programming} & \textbf{Programming Examples} \\ \hline
+      genus & theory & concept & Integral, Character \\ \hline
+      species & model & type or class & uint8\_t, char \\ \hline
+      individual & element & instance  & 01000001(65, 'A') \\
+    \hline
+    \end{tabular}
+\end{center}
+\end{frame}
+
+
+\begin{frame}[fragile]{Definitions}
+  \begin{enumerate}
+    \item Datum
+    \item Value
+    \item Value type
+    \item Object
+    \item Object type
+  \end{enumerate}
+\end{frame}
+
+
+
+\begin{frame}[fragile]{Datum}
+\begin{block}{Definition}
+A \textbf{datum} is a sequence of bits.
+\end{block}
+
+\begin{block}{Example}
+01000001 is an example of a datum.
+\end{block}
+
+\end{frame}
+
+\begin{frame}[fragile]{Value}
+\begin{block}{Definition}
+A \textbf{value is} a \textbf{datum} together with its interpretation.
+\end{block}
+\begin{block}{Example}
+The \textbf{datum} 01000001 might have the interpretation of the integer 65, or the character “A".
+\end{block}
+\begin{block}{Explanation}
+Every \textbf{value} must be associated with a \textbf{datum} in memory; there is no way to refer to disembodied \textbf{values} in modern programming languages.
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{Value type}
+\begin{block}{Definition}
+A \textbf{value type} is a set of values sharing a common interpretation.
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{Object}
+\begin{block}{Definition}
+An \textbf{object} is a collection of bits in memory that contain a \textbf{value} of a given \textbf{value type}.
+\end{block}
+\begin{block}{Explanation}
+An \textbf{object} is immutable if the value never changes, and mutable otherwise. An object is unrestricted if it can contain any \textbf{value} of its \textbf{value type}.
+\end{block}
+\end{frame}
+
+
+\begin{frame}[fragile]{Object type}
+\begin{block}{Definition}
+An \textbf{object type} is a uniform method of storing and retrieving \textbf{values} of a given \textbf{value type} from a particular \textbf{object} when given its address.
+\end{block}
+\end{frame}
+
+
+\section{Programming with concepts}
+\begin{frame}{Regular type}
+\begin{block}{Operation}
+  \begin{enumerate}
+    \item Copy construction
+    \item Assignment
+    \item Equality
+    \item Destruction
+  \end{enumerate}
+\end{block}
+\begin{block}{Semantic}
+    $$\forall a ~ \forall b ~ \forall c : T~a(b)  \implies(b = c \implies a = c)$$
+    $$\forall a ~ \forall b ~ \forall c : a \leftarrow b  \implies(b = c \implies a = c)$$
+    $$\forall f \in RegularFunction: a = b \implies f(a) = f(b)$$
+\end{block}
+\end{frame}
+
+\begin{frame}{Semiregular type}
+\begin{block}{Operation}
+  \begin{enumerate}
+    \item Copy construction
+    \item Assignment
+    \item Destruction
+  \end{enumerate}
+\end{block}
+\begin{block}{Semantic}
+    $$\forall a ~ \forall b ~ \forall c : T~a(b)  \implies(b = c \implies a = c)$$
+    $$\forall a ~ \forall b ~ \forall c : a \leftarrow b  \implies(b = c \implies a = c)$$
+    $$\forall f \in RegularFunction: a = b \implies f(a) = f(b)$$
+\end{block}
+\end{frame}
+
+\begin{frame}{Concepts}
+    \begin{align*}
+        FunctionalProcedure(F) \triangleq F~is~a~regular~procedure~defined~on~regular~&\\
+        types:~replacing~its~inputs~with~equal~objects~\\
+        results~in~equal~output~objects.
+    \end{align*}
+    \begin{align*}
+        UnaryFunction(F) \triangleq FunctionalProcedure(F) \land Arity(F) = 1 &\\
+                \land~Domain: UnaryFunction \rightarrow Regular &\\
+                F \mapsto InputType(F, 0)
+    \end{align*}
+    \begin{align*}
+        HomogeneousFunction(F) \triangleq FunctionalProcedure(F) \land Arity(F) > 0\\
+        \land (\forall i,j \in \mathbb{N})(i,j < Arity(F)) \implies (InputType(F, i) = InputType(F, j))\\
+        \land Domain: HomogeneousFunction \rightarrow Regular\\
+        F \implies InputType(F, 0)
+    \end{align*}
+\end{frame}
+
+\begin{frame}{Concepts}
+    \begin{align*}
+        Predicate(P) \triangleq FunctionalProcedure(F) \land Codomain(P) = bool
+    \end{align*}
+    \begin{align*}
+        HomogeneousPredicate(P) \triangleq Predicate(P) \land HomogeneousFunction(P)
+    \end{align*}
+    \begin{align*}
+        Relation(R) \triangleq HomogeneousPredicate(R) \land Arity(R) = 2
+    \end{align*}
+    \begin{align*}
+        TotallyOrdered(T) \triangleq Regular(T) \land <: T x T \rightarrow bool \land total\_ordering(<)
+    \end{align*}
+\end{frame}
+\begin{frame}{}
+    \begin{align*}
+        property(R: Relation)\\
+        total\_ordering: R \\
+                r \mapsto transitive(r)~\land(\forall a,b \in Domain(R))~exactly~one~of~following~holds:\\
+            r(a, b),~r(b, a),~or~a = b\\
+    \end{align*}
+\end{frame}
+
+\begin{frame}{Journey \#1}
+    \begin{block}{}
+		\lstinputlisting[language=c++]{code/journeys/1/0.min.7.h}
+	\end{block}
+\end{frame}
+
+\begin{frame}{Journey \#1}
+    \begin{block}{}
+		\lstinputlisting[language=c++]{code/journeys/1/0.min.8.h}
+	\end{block}
+\end{frame}
+
+
+
+\begin{frame}{Journey \#1}
+    \begin{block}{}
+		\lstinputlisting[language=c++]{code/journeys/1/0.min.0.h}
+	\end{block}
+\end{frame}
+
+\begin{frame}{Journey \#1}
+    \begin{block}{}
+		\lstinputlisting[language=c++]{code/journeys/1/0.min.1.h}
+	\end{block}
+\end{frame}
+
+
+\begin{frame}{Journey \#1}
+    \begin{block}{}
+		\lstinputlisting[language=c++]{code/journeys/1/0.min.2.h}
+	\end{block}
+\end{frame}
+
+\begin{frame}{Journey \#1}
+    \begin{block}{Dealing with large objects}
+		\lstinputlisting[language=c++]{code/journeys/1/0.min.3.h}
+	\end{block}
+\end{frame}
+
+\begin{frame}{Journey \#1}
+    \begin{block}{}
+		\lstinputlisting[language=c++]{code/journeys/1/0.min.4.h}
+	\end{block}
+\end{frame}
+
+\begin{frame}{Journey \#1}
+    \begin{block}{}
+		\lstinputlisting[language=c++]{code/journeys/1/0.min.5.cpp}
+	\end{block}
+\end{frame}
+
+\begin{frame}{Journey \#1}
+    \begin{block}{}
+		\lstinputlisting[language=c++]{code/journeys/1/0.min.6.h}
+	\end{block}
+\end{frame}
+
+\begin{frame}{Journey \#1}
+    \begin{block}{}
+		\lstinputlisting[language=c++]{code/journeys/1/0.min.7.h}
+	\end{block}
+\end{frame}
+\begin{frame}{Journey \#1}
+    \begin{block}{}
+		\lstinputlisting[language=c++]{code/journeys/1/0.min.8.h}
+	\end{block}
+\end{frame}
+
+
+\begin{frame}{More examples of concepts}
+\begin{enumerate}
+  \item Regular Type
+  \item Semiegular Type
+  \item Functional Procedure
+  \item Homogeneous Function
+  \item Homogeneous Predicate
+  \item Semiring
+  \item Sequence
+  \item Totally Ordered
+  \item Input Iterator
+  \item Forfward Iterator
+  \item Bidirectional Iterator
+\end{enumerate}
+\end{frame}
+
+\begin{frame}{Properties}
+\begin{enumerate}
+  \item Associative
+  \item Distributive
+  \item Transitive
+  \item Semiegular Type
+  \item Functional Procedure
+\end{enumerate}
+\end{frame}
+
+\begin{frame}{Techniques}
+\begin{enumerate}
+  \item Transformation-action duality
+  \item Operation-accumulation procedure duality
+  \item Memory adaptivity
+  \item Reduction to constrained subproblem 
+\end{enumerate}
+\end{frame}
+
+\section{Conclusion}
+
+\begin{frame}{Conclusion}
+  \begin{enumerate}
+    \item Concreteness costs
+    \item Abstracting algorithms to their most general setting without losing efficiency
+    \item Know your algorithms
+  \end{enumerate}
+\end{frame}
+
+
+\end{document}
