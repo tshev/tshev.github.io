@@ -50,6 +50,17 @@
     \end{columns}
 \end{frame}
 
+\begin{frame}{A Familiar Example. Douglas McIlroy about sin}
+Dimensions along which we wish to have variablity:
+\begin{enumerate}
+    \item precision, for which perhaps ten different approximating functionsmight suffice
+    \item floating vs fixed computation
+    \item argument ranges $0 - \pi/2$, $0-2pi$, also $-\pi/2 - pi/2$, $-\pi - \pi$, $-big - +big$
+    \item robustness - ranging from no argument validation through signaling of complete loss of significance, to signaling of specified range violations
+\end{enumerate}
+
+\end{frame}
+
 \begin{frame}{Periodic Table}
     \begin{columns}
         \begin{column}{0.6\textwidth}
@@ -260,72 +271,106 @@ An \textbf{object type} is a uniform method of storing and retrieving \textbf{va
     \end{align*}
 \end{frame}
 
+\begin{frame}{Journey 1}
+    \begin{enumerate}
+        \item min
+        \item max
+    \end{enumerate}
+\end{frame}
+
 \begin{frame}{Journey \#1}
     \begin{block}{}
-		\lstinputlisting[language=c++]{code/journeys/1/0.min.7.h}
+		\lstinputlisting[language=c++]{code/snippets/1/0.min.0.h}
 	\end{block}
 \end{frame}
 
 \begin{frame}{Journey \#1}
     \begin{block}{}
-		\lstinputlisting[language=c++]{code/journeys/1/0.min.8.h}
-	\end{block}
-\end{frame}
-
-
-
-\begin{frame}{Journey \#1}
-    \begin{block}{}
-		\lstinputlisting[language=c++]{code/journeys/1/0.min.0.h}
-	\end{block}
-\end{frame}
-
-\begin{frame}{Journey \#1}
-    \begin{block}{}
-		\lstinputlisting[language=c++]{code/journeys/1/0.min.1.h}
+		\lstinputlisting[language=c++]{code/snippets/1/0.min.1.h}
 	\end{block}
 \end{frame}
 
 
 \begin{frame}{Journey \#1}
     \begin{block}{}
-		\lstinputlisting[language=c++]{code/journeys/1/0.min.2.h}
+		\lstinputlisting[language=c++]{code/snippets/1/0.min.2.h}
 	\end{block}
 \end{frame}
 
 \begin{frame}{Journey \#1}
     \begin{block}{Dealing with large objects}
-		\lstinputlisting[language=c++]{code/journeys/1/0.min.3.h}
+		\lstinputlisting[language=c++]{code/snippets/1/0.min.3.h}
 	\end{block}
 \end{frame}
 
 \begin{frame}{Journey \#1}
     \begin{block}{}
-		\lstinputlisting[language=c++]{code/journeys/1/0.min.4.h}
+		\lstinputlisting[language=c++]{code/snippets/1/0.min.4.h}
 	\end{block}
 \end{frame}
 
 \begin{frame}{Journey \#1}
     \begin{block}{}
-		\lstinputlisting[language=c++]{code/journeys/1/0.min.5.cpp}
+		\lstinputlisting[language=c++]{code/snippets/1/0.min.5.cpp}
 	\end{block}
 \end{frame}
 
 \begin{frame}{Journey \#1}
     \begin{block}{}
-		\lstinputlisting[language=c++]{code/journeys/1/0.min.6.h}
+		\lstinputlisting[language=c++]{code/snippets/1/0.min.6.h}
 	\end{block}
 \end{frame}
 
 \begin{frame}{Journey \#1}
     \begin{block}{}
-		\lstinputlisting[language=c++]{code/journeys/1/0.min.7.h}
+		\lstinputlisting[language=c++]{code/snippets/1/0.min.7.h}
 	\end{block}
 \end{frame}
 \begin{frame}{Journey \#1}
     \begin{block}{}
-		\lstinputlisting[language=c++]{code/journeys/1/0.min.8.h}
+		\lstinputlisting[language=c++]{code/snippets/1/0.min.8.h}
 	\end{block}
+\end{frame}
+
+\begin{frame}{Journey \#1}
+    \begin{block}{}
+		\lstinputlisting[language=c++]{code/snippets/1/0.max.0.h}
+	\end{block}
+\end{frame}
+
+\begin{frame}{Journey \#1}
+    \begin{block}{}
+		\lstinputlisting[language=c++]{code/snippets/1/0.max.0.h}
+	\end{block}
+\end{frame}
+
+\begin{frame}{Journey \#2}
+    \begin{enumerate}
+        \item unique
+        \item unique\_count
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{Journey \#3}
+    \begin{enumerate}
+        \item frequencies 
+        \item transform\_subgroups
+        \item squash\_subgroups
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{Journey \#4}
+    \begin{enumerate}
+        \item split
+        \item transform\_splits
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{Journey \#5}
+    \begin{enumerate}
+        \item remove\_if
+        \item partition\_semistable
+    \end{enumerate}
 \end{frame}
 
 
