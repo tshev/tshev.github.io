@@ -26,7 +26,7 @@ T& min(T& x, T& y) {
     return x;
 }
 
-template<cppcon::regular T, cppcon::relation<T> R>
+template<cppcon::regular T, cppcon::weak_string_ordering<T> R>
 const T& min(const T& x, const T& y, R r) {
     if (r(y, x)) {
         return y;
@@ -234,6 +234,25 @@ std::pair<Out0, Out1> frequencies(It f, It l, Out0 out0, Out1 out1) {
   return {out0, out1};
 }
 
+template<forward_iterator It,
+         output_iterator Out,
+         relation<ValueType(It)> Predicate,
+         typename F>
+requires cppcon::functional_procedure<F, It, It> // Can't write it inside
+Out transform_subgroups(It first, It last, Out out, Predicate pred, F function) {
+    if (first == last) { return out; }
+    It slow = first; It fast = slow;
+    ++fast;
+    while (fast != last) {
+        if (!pred(*slow, *fast)) {
+            *out = function(first, fast);
+            ++out; first = fast;
+        }
+        ++slow; ++fast;
+    }
+    *out = function(first, fast);
+    return ++out;
+}
 
 
 
@@ -264,10 +283,18 @@ int main() {
     std::vector<int> unique_elements;
     std::vector<size_t> occurences;
     cppcon::frequencies(std::begin(values), std::end(values), std::back_inserter(unique_elements), std::back_inserter(occurences));
+
     std::vector<int> expected_unique_elements = {1, 2, 3, 4, 5};
     std::vector<size_t> expected_occurences= {2ul, 1ul, 3ul, 2ul, 1ul};
     assert(unique_elements == expected_unique_elements);
     assert(occurences == expected_occurences);
+
+    std::vector<std::pair<int, size_t>> values_frequencies2;
+    cppcon::transform_subgroups(
+        std::begin(values),
+        std::end(values), std::back_inserter(values_frequencies2), std::equal_to<int>(), [](auto a, auto b) {
+        return std::pair<int, size_t>(*a, b - a);
+    });
 
 
     std::cout << "frequencies\n";

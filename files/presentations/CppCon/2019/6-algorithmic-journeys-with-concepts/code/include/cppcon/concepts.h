@@ -44,8 +44,13 @@ concept regular = semiregular<T> && cppcon::is_equality_comparable<T>::value;
 template<typename T>
 concept totally_ordered = regular<T> && cppcon::is_less_than_comprable<T>::value;
 
-template<typename T, typename U>
-concept relation = std::is_same<typename std::invoke_result<T, U, U>::type, bool>::value;
+template<typename R, typename T>
+concept weak_string_ordering = regular<T> && std::is_same<typename std::invoke_result<R, T, T>::type, bool>::value;
+
+
+template<typename R, typename T>
+concept relation = std::is_same<typename std::invoke_result<R, T, T>::type, bool>::value;
+
 
 template<typename I>
 concept iterator = std::is_same<std::forward_iterator_tag, typename std::iterator_traits<I>::iterator_category>::value ||
@@ -53,6 +58,7 @@ concept iterator = std::is_same<std::forward_iterator_tag, typename std::iterato
                    std::is_same<std::output_iterator_tag, typename std::iterator_traits<I>::iterator_category>::value ||
                    std::is_same<std::bidirectional_iterator_tag, typename std::iterator_traits<I>::iterator_category>::value ||
                    std::is_same<std::random_access_iterator_tag, typename std::iterator_traits<I>::iterator_category>::value;
+
 
 template<typename I>
 concept forward_iterator = iterator<I> && std::is_base_of<std::forward_iterator_tag, typename std::iterator_traits<I>::iterator_category>::value;
@@ -62,6 +68,9 @@ concept input_iterator = iterator<I> && std::is_base_of<std::input_iterator_tag,
 
 template<typename I>
 concept bidirectional_iterator = iterator<I> && std::is_base_of<std::bidirectional_iterator_tag, typename std::iterator_traits<I>::iterator_category>::value;
+
+template<typename F, typename... T>
+concept functional_procedure = regular<typename std::invoke_result<F, T...>::type>;
 
 template<typename I>
 concept output_iterator = iterator<I> && std::is_base_of<std::output_iterator_tag, typename std::iterator_traits<I>::iterator_category>::value;
