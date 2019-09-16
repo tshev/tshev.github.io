@@ -1,4 +1,5 @@
 #include <iostream>
+#include <algorithm>
 #include <memory>
 #include <vector>
 #include <cassert>
@@ -110,6 +111,132 @@ It unique(It first, It last, R r) {
     return result;
 }
 
+
+template<cppcon::forward_iterator It, cppcon::additive_monoid N, cppcon::relation<ValueType(It)> R>
+N unique_count(It first, It last, N n, R r) {
+    if (first == last) { return n; }
+    It result = first;
+    ++first;
+    while (first != last) {
+        if (*result == *first) {
+           ++first;
+        } else {
+            ++n;
+            ++first;
+            ++result;
+        }
+    }
+    ++n;
+    return n;
+}
+
+
+template<cppcon::forward_iterator It, cppcon::additive_monoid N>
+N unique_count(It first, It last, N n) {
+    return unique_count(first, last, n, [](const auto& x, const auto& y) { return x == y; });
+}
+
+
+template<cppcon::forward_iterator It, cppcon::additive_monoid N>
+std::pair<It, N> find_not(It first, It last, const ValueType(It)& x, N n) {
+    while (first != last && *first == x) {
+        ++first;
+        ++n;
+    }
+    return {first, n};
+}
+
+
+template<cppcon::forward_iterator It, cppcon::relation<ValueType(It)> R, cppcon::additive_monoid N>
+std::pair<It, N> find_if_not(It first, It last, const ValueType(It)& x, R r, N n) {
+    while (first != last && r(*first, x)) {
+        ++first;
+        ++n;
+    }
+    return {first, n};
+}
+
+
+template<cppcon::forward_iterator It, cppcon::output_iterator Out>
+inline
+Out frequencies(It f, It l, Out out) {
+  typedef size_t N;
+  while (f != l) { 
+    It it = f;
+    N n = 1;
+    ++f;
+    auto r = find_not(f, l, *it, n);
+    f = r.first;
+    *out = { *it, r.second };
+    ++out;
+  } 
+  return out;
+}
+
+template<cppcon::forward_iterator It, cppcon::output_iterator Out, cppcon::relation<std::pair<ValueType(It), size_t>> R>
+inline
+Out frequencies(It f, It l, Out out, R r) {
+  typedef size_t N;
+  while (f != l) { 
+    It start = f;
+    N n = 1;
+    ++f;
+    auto r = find_if_not(f, l, *start, r, n);
+    f = r.first;
+    *out = { *start, r.second };
+    ++out;
+  } 
+  return out;
+}
+
+
+template<cppcon::forward_iterator It, cppcon::output_iterator Out0, cppcon::output_iterator Out1>
+inline
+std::pair<Out0, Out1> frequencies(It f, It l, Out0 out0, Out1 out1) {
+  typedef size_t N;
+
+  while (f != l) { 
+    It start = f;
+    N n = 1;
+    ++f;
+    auto r = find_not(f, l, *start, n);
+
+    *out0 = *start;
+    ++out0;
+
+    *out1 = r.second;
+    ++out1;
+
+    f = r.first;
+  } 
+  return {out0, out1};
+}
+
+template<cppcon::forward_iterator It, cppcon::output_iterator Out0, cppcon::forward_iterator Out1>
+inline
+std::pair<Out0, Out1> frequencies(It f, It l, Out0 out0, Out1 out1) {
+  typedef ValueType(Out1) N;
+
+  while (f != l) { 
+    It it = f;
+    N n = 1;
+    ++f;
+    auto r = find_not(f, l, *it, n);
+
+    *out0 = *it;
+    ++out0;
+
+    *out1 = r.second;
+    ++out1;
+
+    f = r.first;
+  } 
+  return {out0, out1};
+}
+
+
+
+
 }  // namespace cppcon
 
 
@@ -118,13 +245,31 @@ int main() {
     int y = 3;
     assert(&cppcon::min(x, y) == &x);
     assert(&cppcon::max(x, y) == &y);
-    std::cout << cppcon::min(3, 4) << std::endl;
-    std::cout << cppcon::min(3, 4, std::less<int>()) << std::endl;
     std::vector<int> vals;
-    std::cout << cppcon::iterator<int*> << std::endl;
-    std::cout << cppcon::forward_iterator<int*> << std::endl;
-    std::cout << cppcon::input_iterator<int*> << std::endl;
     cppcon::unique(vals.begin(), vals.end());
 
     std::vector<std::unique_ptr<int>> vals2;
+
+    std::vector<int> values = {1, 1, 2, 3, 3, 3, 4, 4, 5};
+    auto values_copy = values;
+    assert(cppcon::unique(std::begin(values_copy), std::end(values_copy)) - std::begin(values_copy) == 5);
+    std::cout << cppcon::unique_count(std::begin(values), std::end(values), 0)  << std::endl;
+
+    std::vector<std::pair<int, size_t>> values_frequencies;
+    cppcon::frequencies(std::begin(values), std::end(values), std::back_inserter(values_frequencies));
+
+    std::vector<std::pair<int, size_t>> expected_frequencies = {{1, 2ul}, {2, 1ul}, {3, 3ul}, {4, 2ul}, {5, 1ul}};
+    assert(values_frequencies == expected_frequencies);
+
+    std::vector<int> unique_elements;
+    std::vector<size_t> occurences;
+    cppcon::frequencies(std::begin(values), std::end(values), std::back_inserter(unique_elements), std::back_inserter(occurences));
+    std::vector<int> expected_unique_elements = {1, 2, 3, 4, 5};
+    std::vector<size_t> expected_occurences= {2ul, 1ul, 3ul, 2ul, 1ul};
+    assert(unique_elements == expected_unique_elements);
+    assert(occurences == expected_occurences);
+
+
+    std::cout << "frequencies\n";
+    for (auto x : values_frequencies) std::cout << x.first << " " << x.second << std::endl;
 }

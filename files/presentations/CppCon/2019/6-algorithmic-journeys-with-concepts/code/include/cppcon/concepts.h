@@ -64,11 +64,17 @@ template<typename I>
 concept bidirectional_iterator = iterator<I> && std::is_base_of<std::bidirectional_iterator_tag, typename std::iterator_traits<I>::iterator_category>::value;
 
 template<typename I>
+concept output_iterator = iterator<I> && std::is_base_of<std::output_iterator_tag, typename std::iterator_traits<I>::iterator_category>::value;
+
+template<typename I>
 concept random_access_iterator= iterator<I> && std::is_base_of<std::random_access_iterator_tag, typename std::iterator_traits<I>::iterator_category>::value;
 
 #define ValueType(T) typename std::iterator_traits<T>::value_type
 
 template<typename T>
 concept additive_semigroup = regular<T> && has_plus<T>::value;
+
+template<typename T>
+concept additive_monoid = additive_semigroup<T>; // 0 \in T, identity_element(T);
 
 } // namespace cppcon
