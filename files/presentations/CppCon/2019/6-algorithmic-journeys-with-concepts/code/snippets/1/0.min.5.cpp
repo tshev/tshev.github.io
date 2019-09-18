@@ -8,5 +8,5 @@ void usage() {
   employee e1{"Alex Stepanov", 9999999ll};
   min(e0, e1, [](const auto& x, const auto& y) {
     return x.salary < y.salary;
-  });
+  }).salary += 10000ll;
 }

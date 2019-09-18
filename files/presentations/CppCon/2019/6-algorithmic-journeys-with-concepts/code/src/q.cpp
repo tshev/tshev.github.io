@@ -75,7 +75,7 @@ T& max(T& x, T& y, R r) {
 }
 
 template<forward_iterator It>
-requires(regular<value_type_t<It>> && writable<It>)
+requires(regular<ValueType(It)> && writable<It>)
 It unique(It first, It last) {
     if (first == last) { return last; }
     It result = first;
@@ -93,7 +93,7 @@ It unique(It first, It last) {
     return result;
 }
 
-template<forward_iterator It, relation<value_type_t<It>> R>
+template<forward_iterator It, relation<ValueType(It)> R>
 requires writable<It>
 It unique(It first, It last, R r) {
     if (first == last) { return last; }
@@ -113,7 +113,7 @@ It unique(It first, It last, R r) {
 
 
 
-template<forward_iterator It, additive_monoid N, relation<value_type_t<It>> R>
+template<forward_iterator It, additive_monoid N, relation<ValueType(It)> R>
 requires readable<It>
 N unique_count(It first, It last, N n, R r) {
     if (first == last) { return n; }
@@ -142,8 +142,8 @@ N unique_count(It first, It last, N n) {
 
 
 template<forward_iterator It, additive_monoid N>
-requires readable<It> && regular<value_type_t<It>>
-std::pair<It, N> find_not(It first, It last, const value_type_t<It>& x, N n) {
+requires readable<It> && regular<ValueType(It)>
+std::pair<It, N> find_not(It first, It last, const ValueType(It)& x, N n) {
     while (first != last && *first == x) {
         ++first;
         ++n;
@@ -152,9 +152,9 @@ std::pair<It, N> find_not(It first, It last, const value_type_t<It>& x, N n) {
 }
 
 
-template<forward_iterator It, relation<value_type_t<It>> R, additive_monoid N>
+template<forward_iterator It, relation<ValueType(It)> R, additive_monoid N>
 requires(readable<It>) // TODO
-std::pair<It, N> find_if_not(It first, It last, const value_type_t<It>& x, R r, N n) {
+std::pair<It, N> find_if_not(It first, It last, const ValueType(It)& x, R r, N n) {
     while (first != last && r(*first, x)) {
         ++first;
         ++n;
@@ -164,7 +164,8 @@ std::pair<It, N> find_if_not(It first, It last, const value_type_t<It>& x, R r, 
 
 
 template<forward_iterator It, output_iterator Out>
-requires readable<It> && writable<Out, std::pair<value_type_t<It>, size_t>> // TODO value type
+requires readable<It> && writable<Out> // TODO value type
+inline
 Out frequencies(It f, It l, Out out) {
   typedef size_t N;
   while (f != l) { 
@@ -179,8 +180,9 @@ Out frequencies(It f, It l, Out out) {
   return out;
 }
 
-template<forward_iterator It, output_iterator Out, relation<std::pair<value_type_t<It>, size_t>> R>
+template<forward_iterator It, output_iterator Out, relation<std::pair<ValueType(It), size_t>> R>
 requires readable<It> && writable<Out> // TODO value type
+inline
 Out frequencies(It f, It l, Out out, R r) {
   typedef size_t N;
   while (f != l) { 
@@ -197,7 +199,8 @@ Out frequencies(It f, It l, Out out, R r) {
 
 
 template<forward_iterator It, output_iterator Out0, output_iterator Out1>
-requires readable<It> && writable<Out0, value_type_t<It>> && writable<Out1, size_t>
+requires readable<It> && writable<Out0> && writable<Out1>
+inline
 std::pair<Out0, Out1> frequencies(It f, It l, Out0 out0, Out1 out1) {
   typedef size_t N;
 
@@ -220,8 +223,9 @@ std::pair<Out0, Out1> frequencies(It f, It l, Out0 out0, Out1 out1) {
 
 template<forward_iterator It, output_iterator Out0, forward_iterator Out1>
 requires readable<It> && writable<Out0> && writable<Out1>
+inline
 std::pair<Out0, Out1> frequencies(It f, It l, Out0 out0, Out1 out1) {
-  typedef value_type_t<Out1> N;
+  typedef ValueType(Out1) N;
 
   while (f != l) { 
     It it = f;
@@ -242,9 +246,10 @@ std::pair<Out0, Out1> frequencies(It f, It l, Out0 out0, Out1 out1) {
 
 template<forward_iterator It,
          output_iterator Out,
-         relation<value_type_t<It>> P,
+         relation<ValueType(It)> P,
          functional_procedure<It, It> F>
-requires readable<It> && writable<Out, codomain_t<F, It, It>> 
+requires readable<It> && writable<Out> 
+// Codomain(F) == ValueType(It)
 Out transform_subgroups(It first, It last, Out out, P pred, F function) {
     if (first == last) { return out; }
     It slow = first;
@@ -265,9 +270,9 @@ Out transform_subgroups(It first, It last, Out out, P pred, F function) {
 
 template<forward_iterator It,
          output_iterator Out,
-         relation<value_type_t<It>> P,
-         functional_procedure<It, distance_type_t<It>> F>
-requires readable<It> && writable<Out, codomain_t<F, It, distance_type_t<It>> >
+         relation<ValueType(It)> P,
+         functional_procedure<It, difference_type_t<It>> F>
+requires readable<It> && writable<Out> 
 Out transform_subgroups(It first, It last, Out out, P pred, F function) {
     if (first == last) { return out; }
     It slow = first;
@@ -291,16 +296,16 @@ Out transform_subgroups(It first, It last, Out out, P pred, F function) {
 
 template<forward_iterator It,
          output_iterator Out,
-         relation<value_type_t<It>> Predicate,
+         relation<ValueType(It)> Predicate,
          functional_procedure<It, It> F>
-requires readable<It> && writable<Out, codomain_t<F, It, distance_type_t<It>>>
+requires readable<It> && writable<It>
 Out squash_subgroups(It first, It last, Predicate pred, F function) {
     return transform_subgroups(first, last, first, pred, function);
 }
 
 template<forward_iterator It, functional_procedure<It, It> F>
 requires readable<It>
-void split(It first, It last, const value_type_t<It>& value, F f) {
+void split(It first, It last, const ValueType(It)& value, F f) {
     while (first != last) {
         It middle = std::find(first, last, value);
         f(first, middle);
@@ -312,8 +317,7 @@ void split(It first, It last, const value_type_t<It>& value, F f) {
 }
 
 template<forward_iterator It, output_iterator Out, functional_procedure<It, It> F>
-requires writable<Out, codomain_t<F, It, It>>
-Out transform_split(It first, It last, Out out, const value_type_t<It>& value, F f) {
+Out transform_split(It first, It last, Out out, const ValueType(It)& value, F f) {
     while (first != last) {
         It middle = std::find(first, last, value);
         *out = f(first, middle);
@@ -326,7 +330,6 @@ Out transform_split(It first, It last, Out out, const value_type_t<It>& value, F
     return out;
 }
 
-
 template<forward_iterator It0, forward_iterator It1>
 requires readable<It0> && readable<It1>
 std::pair<It0, It1> find_missmatch(It0 first0, It0 last0, It1 first1, It1 last1) {
@@ -336,7 +339,6 @@ std::pair<It0, It1> find_missmatch(It0 first0, It0 last0, It1 first1, It1 last1)
     }
     return {first0, first1};
 }
-
 
 template<random_access_iterator It0, random_access_iterator It1>
 requires readable<It0> && readable<It1>
@@ -352,7 +354,6 @@ std::pair<It0, It1> find_missmatch(It0 first0, It0 last0, It1 first1, It1 last1)
     }
     return {first0, first1};
 }
-
 
 template<forward_iterator It0, forward_iterator It1>
 requires readable<It0> && readable<It1>
@@ -380,7 +381,7 @@ void split(It0 first0, It0 last0, It1 first1, It1 last1, F f) {
 
 
 template<forward_iterator It0, output_iterator Out, forward_iterator It1, functional_procedure<It0, It0> F>
-requires readable<It0> && readable<It1> && writable<Out, codomain_t<F, It0, It0>>
+requires readable<It0> && readable<It1> && writable<Out>
 Out transform_split(It0 first0, It0 last0, Out out, It1 first1, It1 last1, F f) {
     auto step_size = std::distance(first1, last1);
     while (first0 != last0) {
@@ -396,7 +397,7 @@ Out transform_split(It0 first0, It0 last0, Out out, It1 first1, It1 last1, F f) 
 }
 
 
-template<forward_iterator It, unary_predicate<value_type_t<It>> P>
+template<forward_iterator It, unary_predicate<ValueType(It)> P>
 requires readable<It> && writable<It>
 It remove_if(It first, It last, P pred) {
     first = std::find_if(first, last, pred);
@@ -413,7 +414,7 @@ It remove_if(It first, It last, P pred) {
     return first;
 }
 
-template<forward_iterator It, unary_predicate<value_type_t<It>> P>
+template<forward_iterator It, unary_predicate<ValueType(It)> P>
 requires readable<It> && writable<It>
 It semistable_partition(It first, It last, P pred) {
     first = std::find_if(first, last, pred);
@@ -430,8 +431,7 @@ It semistable_partition(It first, It last, P pred) {
     return first;
 }
 
-
-template<forward_iterator It0, forward_iterator It1, binary_predicate<value_type_t<It0>, value_type_t<It1>> P>
+template<forward_iterator It0, forward_iterator It1, binary_predicate<ValueType(It0), ValueType(It1)> P>
 requires readable<It0> && readable<It1>
 std::pair<It0, It1> find_if(It0 first0, It0 last0, It1 first1, P pred) {
     while (first0 != last0 && !pred(*first0, first1)) {
@@ -442,8 +442,8 @@ std::pair<It0, It1> find_if(It0 first0, It0 last0, It1 first1, P pred) {
 }
 
 
-template<forward_iterator It0, forward_iterator It1, binary_predicate<value_type_t<It0>, value_type_t<It1>> P>
-requires (readable<It0> && writable<It0>) && (readable<It1> && writable<It1>)
+template<forward_iterator It0, forward_iterator It1, binary_predicate<ValueType(It0), ValueType(It1)> P>
+requires readable<It0> && writable<It0> && readable<It1> && writable<It1>
 std::pair<It0, It1> semistable_partition(It0 first0, It0 last0, It1 first1, P pred) {
     std::pair<It0, It1> r = find_if(first0, last0, first1, pred);
     first0 = r.first; first1 = r.second;
@@ -534,5 +534,4 @@ int main() {
         assert(std::equal(std::begin(values), middle, values.begin(), values.begin() + 3));
         assert(values == expected_values);
     }
-
 }

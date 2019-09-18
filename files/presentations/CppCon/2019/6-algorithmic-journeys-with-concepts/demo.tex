@@ -55,7 +55,7 @@ Dimensions along which we wish to have variablity:
 \begin{enumerate}
     \item precision, for which perhaps ten different approximating functionsmight suffice
     \item floating vs fixed computation
-    \item argument ranges $0 - \pi/2$, $0-2pi$, also $-\pi/2 - pi/2$, $-\pi - \pi$, $-big - +big$
+    \item argument ranges $[0, \pi/2]$, $[0, 2pi]$, also $[-\pi/2, pi/2]$, $[-\pi, \pi]$, $[-big, +big]$
     \item robustness - ranging from no argument validation through signaling of complete loss of significance, to signaling of specified range violations
 \end{enumerate}
 
@@ -114,7 +114,7 @@ Dimensions along which we wish to have variablity:
 \begin{enumerate}
 	\item Things which are equal to the same thing are also equal to one other.
 	\item If equals be added to equals, the wholes are equal.
-	\item If quals be subructed from equals, the remainders are equal.
+	\item If equals be subructed from equals, the remainders are equal.
 	\item Things which coincide with one another are equal to one another.
 	\item The whole is greater than the part.
 \end{enumerate}
@@ -231,6 +231,82 @@ An \textbf{object type} is a uniform method of storing and retrieving \textbf{va
 
 \begin{frame}{Concepts}
     \begin{align*}
+        Readable(T) ~\triangleq~ & Regular(T) ~\land \\
+        & ValueType: Readable \rightarrow Regular ~\land \\
+        & source: T \rightarrow ValueType(T) ~\land\\
+    \end{align*}
+\end{frame}
+
+\begin{frame}{Concepts}
+    \begin{align*}
+        Writable(T) ~\triangleq~ & Regular(T) ~\land \\
+        & ValueType: Writable \rightarrow Regular ~\land \\
+        & (\forall x \in T) (\forall v \in ValueType(T))~sink(x)~\leftarrow~v ~ \\
+        & ~~~~is~a~well-formed~statement \\
+        & source: T \rightarrow ValueType(T) ~\land\\
+    \end{align*}
+\end{frame}
+
+
+\begin{frame}{Concepts}
+    \begin{align*}
+        Iterator(T) ~\triangleq~ & Regular(T) ~\land \\
+        & DistanceType: Iterator \rightarrow Integer ~\land \\
+        & successor: T \rightarrow T ~\land\\
+        & successor~is~not~necessarily-regular
+    \end{align*}
+\end{frame}
+
+\begin{frame}{Concepts}
+    \begin{align*}
+        ForwardIterator(T) ~\triangleq~ & Iterator(T) ~\land ~regular\_unary\_function(successor)
+    \end{align*}
+\end{frame}
+
+\begin{frame}{Concepts}
+    \begin{align*}
+        BidirectionalIterator(T) ~\triangleq~ & ForwardIterator(T) ~\land \\
+                                              & predecessor: T \rightarrow T ~\land \\
+                                              & predecessor~takes~constant~type ~\land \\
+                                              & (\forall i \in T) successor(i) is defined~\implies \\
+                                              & ~~~~predecessor(successor(i))~is~defined \\
+                                              & ~~~~and~equals~to~i~ \land\\
+                                              & (\forall i \in T) predecessor(i)~is~defined~ \implies \\
+                                              & ~~~~successor(predecessor(i))~is~defined\\
+                                              & ~~~~and~equals~to~i
+    \end{align*}
+\end{frame}
+
+\begin{frame}{Concepts}
+    \begin{align*}
+        IndexedIterator(T) ~\triangleq~ & ForwardIterator(T) ~\land \\
+                                              & +: T~x~DifferenceType(T) \rightarrow T ~\land\\
+                                              & -: T~x~T \rightarrow DifferenceType(T) ~\land\\
+                                              & + takes~constant~time\\
+                                              & - takes~constant~time
+    \end{align*}
+\end{frame}
+
+
+\begin{frame}{Concepts}
+    \begin{align*}
+        RandomAccessIterator(T)  ~\triangleq~ & BidirectionalIterator(T) ~\land \\
+                                              & IndexedIterator(T) ~\land \\
+                                              & TotallyOrdered(T) ~\land \\
+                                              & (\forall i,j \in T) i < j \iff i \prec j ~ \land \\
+                                              & DifferenceType: \\
+                                              & ~~~~RandomAccessIterator \rightarrow Integer ~ \land\\
+                                              & +: T~x~DifferenceType(T) \rightarrow T ~\land\\
+                                              & -: T~x~DifferenceType(T) \rightarrow T ~\land\\
+                                              & -: T~x~T \rightarrow DifferenceType(T) ~\land\\
+                                              & < takes~constant~time ~\land\\
+                                              & - between~and~iterator~and~an~integer \\
+                                              & ~~~~takes~constant~time
+    \end{align*}
+\end{frame}
+
+\begin{frame}{Concepts}
+    \begin{align*}
         FunctionalProcedure(F) \triangleq F~is~a~regular~procedure~defined~on~regular~&\\
         types:~replacing~its~inputs~with~equal~objects~\\
         results~in~equal~output~objects.
@@ -259,7 +335,7 @@ An \textbf{object type} is a uniform method of storing and retrieving \textbf{va
         Relation(R) \triangleq HomogeneousPredicate(R) \land Arity(R) = 2
     \end{align*}
     \begin{align*}
-        TotallyOrdered(T) \triangleq Regular(T) \land <: T x T \rightarrow bool \land total\_ordering(<)
+        TotallyOrdered(T) \triangleq Regular(T) \land <: T~x~T \rightarrow bool \land total\_ordering(<)
     \end{align*}
 \end{frame}
 \begin{frame}{}
@@ -340,7 +416,7 @@ An \textbf{object type} is a uniform method of storing and retrieving \textbf{va
 
 \begin{frame}{Journey \#1}
     \begin{block}{}
-		\lstinputlisting[language=c++]{code/snippets/1/0.max.0.h}
+		\lstinputlisting[language=c++]{code/include/cppcon/cppcon.function.min0.h}
 	\end{block}
 \end{frame}
 
@@ -350,6 +426,14 @@ An \textbf{object type} is a uniform method of storing and retrieving \textbf{va
         \item unique\_count
     \end{enumerate}
 \end{frame}
+
+\begin{frame}{Journey \#2}
+    \begin{block}{}
+		\lstinputlisting[language=c++,firstline=2]{code/include/cppcon/cppcon.function.unique.0.h}
+	\end{block}
+\end{frame}
+
+
 
 \begin{frame}{Journey \#3}
     \begin{enumerate}
@@ -416,8 +500,7 @@ An \textbf{object type} is a uniform method of storing and retrieving \textbf{va
     \item Concreteness costs
     \item Abstracting algorithms to their most general setting without losing efficiency
     \item Know your algorithms
+    \item If y
   \end{enumerate}
 \end{frame}
-
-
 \end{document}
