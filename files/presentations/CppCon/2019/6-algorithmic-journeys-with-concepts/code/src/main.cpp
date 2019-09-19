@@ -18,6 +18,7 @@ const T& min(const T& x, const T& y) {
     return x;
 }
 
+
 template<totally_ordered T>
 T& min(T& x, T& y) {
     if (y < x) {
@@ -25,6 +26,7 @@ T& min(T& x, T& y) {
     }
     return x;
 }
+
 
 template<typename T, unary_function<T> Projection>
 requires totally_ordered<codomain_t<Projection, T>>
@@ -510,28 +512,27 @@ std::pair<It0, It1> semistable_partition(It0 first0, It0 last0, It1 first1, P pr
 
 }  // namespace cppcon
 
+void journey0() {
+  int x = 3;
+  int y = 3;
 
-int main() {
-    {
-        int x = 3;
-        int y = 3;
+  assert(&cppcon::min(x, y) == &x);
+  assert(&cppcon::max(x, y) == &y);
 
-        assert(&cppcon::min(x, y) == &x);
-        assert(&cppcon::max(x, y) == &y);
+  assert(&cppcon::min(x, y, std::less<int>()) == &x);
+  assert(&cppcon::max(x, y, std::less<int>()) == &y);
 
-        assert(&cppcon::min(x, y, std::less<int>()) == &x);
-        assert(&cppcon::max(x, y, std::less<int>()) == &y);
+  std::pair<int, int> px(1, 4);
+  std::pair<int, int> py(1, 3);
 
-        std::pair<int, int> px(1, 4);
-        std::pair<int, int> py(1, 3);
+  assert(&cppcon::min(px, py, [](auto x) { return x.first; }) == &px);
+  assert(&cppcon::max(px, py, [](auto x) { return x.first; }) == &py);
 
-        assert(&cppcon::min(px, py, [](auto x) { return x.first; }) == &px);
-        assert(&cppcon::max(px, py, [](auto x) { return x.first; }) == &py);
+  std::vector<int> vals;
+  cppcon::unique(vals.begin(), vals.end());
+}
 
-        std::vector<int> vals;
-        cppcon::unique(vals.begin(), vals.end());
-    }
-
+void journey1() {
     std::vector<int> values = {1, 1, 2, 3, 3, 3, 4, 4, 5};
     auto values_copy = values;
     assert(cppcon::unique(std::begin(values_copy), std::end(values_copy)) - std::begin(values_copy) == 5);
@@ -552,15 +553,21 @@ int main() {
     assert(unique_elements == expected_unique_elements);
     assert(occurences == expected_occurences);
 
-    std::vector<std::pair<int, size_t>> values_frequencies2;
+}
+
+void journey2() {
+    std::vector<int> values = {1, 1, 2, 3, 3, 3, 4, 4, 5};
+    std::vector<std::pair<int, size_t>> values_and_frequencies;
     cppcon::transform_subgroups(
         std::begin(values),
         std::end(values),
-        std::back_inserter(values_frequencies2),
+        std::back_inserter(values_and_frequencies),
         std::equal_to<int>(),
         [](auto first, size_t n) { return std::pair<int, size_t>(*first, n); }
     );
+}
 
+void journey3() {
     std::string str = "a_b_c_de_";
     std::string str_new;
     cppcon::split(std::begin(str), std::end(str), '_', [&str_new](auto first, auto last) { std::copy(first, last, std::back_inserter(str_new)); });
@@ -575,20 +582,30 @@ int main() {
     std::string delimiter = "__";
     cppcon::transform_split(std::begin(str), std::end(str), std::back_inserter(str_out), std::begin(delimiter), std::end(delimiter), [](auto first, auto last) { return *first; });
     assert(str_out == "abcd");
+}
 
-    {
-        std::vector<int> values = {1, 2, 3, 4, 5, 6};
-        std::vector<int> expected_values = {1, 3, 5};
-        values.resize(cppcon::remove_if(values.begin(), values.end(), [](auto x) { return x % 2 == 0; }) - values.begin());
-        assert(values == expected_values);
-    }
+void journey4() {
+  struct is_even {
+    bool operator()(int x) const { return x % 2 == 0; }
+  };
+  std::vector<int> values = {1, 2, 3, 4, 5, 6};
+  std::vector<int> expected_values = {1, 3, 5};
 
-    {
-        std::vector<int> values = {1, 2, 3, 4, 5, 6};
-        std::vector<int> expected_values = {1, 3, 5, 4, 2, 6};
-        auto middle = cppcon::semistable_partition(values.begin(), values.end(), [](auto x) { return x % 2 == 0; });
-        assert(std::equal(std::begin(values), middle, values.begin(), values.begin() + 3));
-        assert(values == expected_values);
-    }
+  auto middle = cppcon::remove_if(values.begin(), values.end(), is_even());
+  values.resize(middle - values.begin());
+  assert(values == expected_values);
 
+  values = {1, 2, 3, 4, 5, 6};
+  expected_values = {1, 3, 5, 4, 2, 6};
+  middle = cppcon::semistable_partition(values.begin(), values.end(), is_even());
+  assert(std::equal(std::begin(values), middle, values.begin(), values.begin() + 3));
+  assert(values == expected_values);
+}
+
+int main() {
+    journey0(); // min, max
+    journey1(); // unique, unique_copy
+    journey2(); // frequencies
+    journey3(); // split
+    journey4(); // remove_if, semistable_partition
 }
