@@ -37,8 +37,8 @@ struct is_less_than_comprable: std::false_type {};
 template<typename T>
 struct is_less_than_comprable<T, typename std::enable_if<std::is_same<decltype(std::declval<T&>() < std::declval<T&>()), bool>::value>::type> : std::true_type {};
 
-template<typename T, typename U = ValueType(T)> concept writable = requires(T it, U x) { *it = x; }; 
-//template<typename T> concept writable = true; 
+template<typename T, typename U = ValueType(T)>
+concept writable = requires(T it, U x) { *it = x; }; 
 
 
 template<typename T>
@@ -68,6 +68,10 @@ concept functional_procedure = regular<typename std::invoke_result<F, T...>::typ
 
 template<typename F, typename... T>
 concept predicate = functional_procedure<F, T...> && std::is_same<typename std::invoke_result<F, T...>::type, bool>::value;
+
+
+template<typename F, typename T>
+concept unary_function = functional_procedure<F, T> && regular<T>;
 
 template<typename P, typename T>
 concept unary_predicate = predicate<P, T>;
@@ -102,4 +106,11 @@ concept additive_semigroup = regular<T> && std::is_same<decltype(T() + T()), T>:
 
 template<typename T>
 concept additive_monoid = additive_semigroup<T>; // 0 \in T, identity_element(T);
+
+template<typename F, typename T>
+concept projection_function = totally_ordered<codomain_t<F, T>>;
+//&& unary_function<F, T> && std::is_same<codomain_t<F, T>, T>::value;
+
 } // namespace cppcon
+
+

@@ -26,6 +26,25 @@ T& min(T& x, T& y) {
     return x;
 }
 
+template<typename T, unary_function<T> Projection>
+requires totally_ordered<codomain_t<Projection, T>>
+const T& min(const T& x, const T& y, Projection projection) {
+    if (projection(y) < projection(x)) {
+        return y;
+    }
+    return x;
+}
+
+
+template<typename T, unary_function<T> Projection>
+requires totally_ordered<codomain_t<Projection, T>>
+T& min(T& x, T& y, Projection projection) {
+    if (projection(y) < projection(x)) {
+        return y;
+    }
+    return x;
+}
+
 template<typename T, weak_strict_ordering<T> R>
 const T& min(const T& x, const T& y, R r) {
     if (r(y, x)) {
@@ -42,6 +61,7 @@ T& min(T& x, T& y, R r) {
     return x;
 }
 
+
 template<totally_ordered T>
 const T& max(const T& x, const T& y) {
     if (y < x) {
@@ -49,6 +69,7 @@ const T& max(const T& x, const T& y) {
     }
     return y;
 }
+
 
 template<totally_ordered T>
 T& max(T& x, T& y) {
@@ -66,6 +87,8 @@ const T& max(const T& x, const T& y, R r) {
     return y;
 }
 
+
+
 template<regular T, relation<T> R>
 T& max(T& x, T& y, R r) {
     if (r(y, x)) {
@@ -73,6 +96,26 @@ T& max(T& x, T& y, R r) {
     }
     return y;
 }
+
+template<typename T, unary_function<T> Projection>
+requires totally_ordered<codomain_t<Projection, T>>
+const T& max(const T& x, const T& y, Projection projection) {
+    if (projection(y) < projection(x)) {
+        return x;
+    }
+    return y;
+}
+
+
+template<typename T, unary_function<T> Projection>
+requires totally_ordered<codomain_t<Projection, T>>
+T& max(T& x, T& y, Projection projection) {
+    if (projection(y) < projection(x)) {
+        return x;
+    }
+    return y;
+}
+
 
 template<forward_iterator It>
 requires(regular<value_type_t<It>> && writable<It>)
@@ -92,6 +135,7 @@ It unique(It first, It last) {
     ++result;
     return result;
 }
+
 
 template<forward_iterator It, relation<value_type_t<It>> R>
 requires writable<It>
@@ -471,8 +515,19 @@ int main() {
     {
         int x = 3;
         int y = 3;
+
         assert(&cppcon::min(x, y) == &x);
         assert(&cppcon::max(x, y) == &y);
+
+        assert(&cppcon::min(x, y, std::less<int>()) == &x);
+        assert(&cppcon::max(x, y, std::less<int>()) == &y);
+
+        std::pair<int, int> px(1, 4);
+        std::pair<int, int> py(1, 3);
+
+        assert(&cppcon::min(px, py, [](auto x) { return x.first; }) == &px);
+        assert(&cppcon::max(px, py, [](auto x) { return x.first; }) == &py);
+
         std::vector<int> vals;
         cppcon::unique(vals.begin(), vals.end());
     }
@@ -503,7 +558,7 @@ int main() {
         std::end(values),
         std::back_inserter(values_frequencies2),
         std::equal_to<int>(),
-        [](auto first, size_t n) { return std::pair<int, size_t>(*first, n);}
+        [](auto first, size_t n) { return std::pair<int, size_t>(*first, n); }
     );
 
     std::string str = "a_b_c_de_";
@@ -527,6 +582,7 @@ int main() {
         values.resize(cppcon::remove_if(values.begin(), values.end(), [](auto x) { return x % 2 == 0; }) - values.begin());
         assert(values == expected_values);
     }
+
     {
         std::vector<int> values = {1, 2, 3, 4, 5, 6};
         std::vector<int> expected_values = {1, 3, 5, 4, 2, 6};
