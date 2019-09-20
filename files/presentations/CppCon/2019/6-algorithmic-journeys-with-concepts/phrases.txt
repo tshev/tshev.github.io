@@ -1,1 +1,0 @@
-Let's look closer at common notions, because they defining the properties of equality.
