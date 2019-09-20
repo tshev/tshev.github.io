@@ -1,5 +1,7 @@
 \documentclass[10pt]{beamer}
+\usepackage[utf8]{inputenc}
 \usepackage{listings}
+\usepackage{xcolor}
 
 \usepackage{amsmath}
 \usepackage{nccmath}
@@ -7,7 +9,6 @@
 \usepackage{amssymb} 
 \usetheme[progressbar=frametitle]{metropolis}
 \usepackage{appendixnumberbeamer}
-
 \usepackage{booktabs}
 \usepackage[scale=2]{ccicons}
 
@@ -24,6 +25,16 @@
 \author{Taras Shevchenko}
 \institute{Rails Reactor / Giphy}
 % \titlegraphic{\hfill\includegraphics[height=1.5cm]{logo.pdf}}
+\lstdefinestyle{cpp}{
+  language=C++,
+  stepnumber=1,
+  numbersep=10pt,
+  tabsize=2,
+  showspaces=false,
+  showstringspaces=false,
+  basicstyle=\scriptsize,
+  breaklines
+}
 
 \begin{document}
 
@@ -284,8 +295,35 @@ An \textbf{object type} is a uniform method of storing and retrieving \textbf{va
 \end{block}
 \end{frame}
 
-
 \section{Programming with concepts}
+\begin{frame}{Semiregular}
+    \begin{block}{Operation}
+      \begin{enumerate}
+        \item Copy construction
+        \item Assignment
+        \item Destruction
+      \end{enumerate}
+    \end{block}
+
+    \begin{block}{Semantic}
+        $$\forall a ~ \forall b ~ \forall c : T~a(b)  \implies(b = c \implies a = c)$$
+        $$\forall a ~ \forall b ~ \forall c : a \leftarrow b  \implies(b = c \implies a = c)$$
+        $$\forall f \in RegularFunction: a = b \implies f(a) = f(b)$$
+    \end{block}
+\end{frame}
+
+\begin{frame}[fragile]{Semiregular}
+\begin{lstlisting}[style=cpp]
+
+template<typename T>
+concept semiregular = std::is_default_constructible<T>::value &&
+                      std::is_copy_constructible<T>::value &&
+                      std::is_copy_assignable<T>::value &&
+                      std::is_destructible<T>::value
+
+\end{lstlisting}
+\end{frame}
+
 \begin{frame}{Regular type}
 \begin{block}{Operation}
   \begin{enumerate}
@@ -302,20 +340,91 @@ An \textbf{object type} is a uniform method of storing and retrieving \textbf{va
 \end{block}
 \end{frame}
 
-\begin{frame}{Semiregular type}
-\begin{block}{Operation}
-  \begin{enumerate}
-    \item Copy construction
-    \item Assignment
-    \item Destruction
-  \end{enumerate}
-\end{block}
-\begin{block}{Semantic}
-    $$\forall a ~ \forall b ~ \forall c : T~a(b)  \implies(b = c \implies a = c)$$
-    $$\forall a ~ \forall b ~ \forall c : a \leftarrow b  \implies(b = c \implies a = c)$$
-    $$\forall f \in RegularFunction: a = b \implies f(a) = f(b)$$
-\end{block}
+\begin{frame}[fragile]{Regular}
+\begin{lstlisting}[style=cpp]
+
+template<typename T>
+concept semiregular = semiregular<T> && is_equality_comparable<T>::value;
+
+\end{lstlisting}
 \end{frame}
+
+\begin{frame}{Relation}
+    \begin{align*}
+        FunctionalProcedure(F) \triangleq F~is~a~regular~procedure~defined~on~regular~&\\
+        types:~replacing~its~inputs~with~equal~objects~\\
+        results~in~equal~output~objects. \\\\
+        HomogeneousFunction(F) \triangleq FunctionalProcedure(F) \land Arity(F) > 0\\
+        \land (\forall i,j \in \mathbb{N})(i,j < Arity(F)) \implies (InputType(F, i) = InputType(F, j))\\
+        \land Domain: HomogeneousFunction \rightarrow Regular\\
+        F \implies InputType(F, 0)
+    \end{align*}
+\end{frame}
+
+
+
+\begin{frame}[fragile]{Regular}
+\begin{lstlisting}[style=cpp]
+template<typename F, typename... T>
+concept functional_procedure = (regular<typename std::invoke_result<F, T...>::type> || std::is_same<typename std::invoke_result<F, T...>::type, void>::value) && is_regular<T...>::value;
+
+template<typename F, typename... T>
+concept homogeneous_function = functional_procedure<F, T...> && sizeof...(T) > 0 && all_same<T...>::value && all_regular<T>;
+
+\end{lstlisting}
+\end{frame}
+
+
+
+\begin{frame}
+\begin{align*}
+    Predicate(P) \triangleq FunctionalProcedure(F) \land Codomain(P) = bool\\\\
+    HomogeneousPredicate(P) \triangleq Predicate(P) \land HomogeneousFunction(P) \\\\
+    Relation(R) \triangleq HomogeneousPredicate(R) \land Arity(R) = 2\\\\
+\end{align*}
+
+\end{frame}
+
+
+\begin{frame}[fragile]{Relation}
+\begin{lstlisting}[style=cpp]
+template<typename F, typename... T>
+concept predicate = functional_procedure<F, T...> && std::is_same<codomain_t<F, T...>, bool>::value;
+
+template<typename F, typename... T>
+concept homogeneous_predicate = predicate<F, T...> && homogeneous_function<T...>;
+
+template<typename R, typename T>
+concept relation = predicate<R, T, T>;
+\end{lstlisting}
+\end{frame}
+
+
+\begin{frame}{Totally Ordered}
+    \begin{align*}
+        property(R: Relation)\\
+        transitive: R \\
+                r \mapsto (\forall a,b,c \in Domain(R)) (r(a, b) \land r(b,c) \implies r(a, c))\\\\
+        property(R: Relation)\\
+        total\_ordering: R \\
+                r \mapsto transitive(r)~\land(\forall a,b \in Domain(R))~exactly~one~of~following~holds:\\
+            r(a, b),~r(b, a),~or~a = b\\
+    \end{align*}
+
+    \begin{align*}
+        TotallyOrdered(T) \triangleq Regular(T) \land <: T~x~T \rightarrow bool \land total\_ordering(<)
+    \end{align*}
+\end{frame}
+
+\begin{frame}[fragile]{Totally Ordered}
+\begin{lstlisting}[style=cpp]
+template<typename T>
+concept totally_ordered = regular<T> && is_less_than_comprable<T>::value;
+
+\end{lstlisting}
+\end{frame}
+
+
 
 \begin{frame}{Concepts}
     \begin{align*}
@@ -381,7 +490,7 @@ An \textbf{object type} is a uniform method of storing and retrieving \textbf{va
         RandomAccessIterator(T)  ~\triangleq~ & BidirectionalIterator(T) ~\land \\
                                               & IndexedIterator(T) ~\land \\
                                               & TotallyOrdered(T) ~\land \\
-                                              & (\forall i,j \in T) i < j \iff i \prec j ~ \land \\
+                                              & (\forall i,j \in T) ~i < j \iff i \prec j ~ \land \\
                                               & DifferenceType: \\
                                               & ~~~~RandomAccessIterator \rightarrow Integer ~ \land\\
                                               & +: T~x~DifferenceType(T) \rightarrow T ~\land\\
@@ -421,9 +530,6 @@ An \textbf{object type} is a uniform method of storing and retrieving \textbf{va
     \end{align*}
     \begin{align*}
         Relation(R) \triangleq HomogeneousPredicate(R) \land Arity(R) = 2
-    \end{align*}
-    \begin{align*}
-        TotallyOrdered(T) \triangleq Regular(T) \land <: T~x~T \rightarrow bool \land total\_ordering(<)
     \end{align*}
 \end{frame}
 \begin{frame}{}
@@ -585,7 +691,9 @@ An \textbf{object type} is a uniform method of storing and retrieving \textbf{va
 
 \begin{frame}{Conclusion}
   \begin{enumerate}
+    \item Concepts are mathematical. They are not specific to C++.
     \item Know as many algorithms as you can.
+    \item Algorithms come in groups.
     \item Transform complicated loops into well-defined algorithms.
     \item Use mathematics for everything you do.
     \item Don't obay mathematical convetions in programming.
@@ -593,4 +701,5 @@ An \textbf{object type} is a uniform method of storing and retrieving \textbf{va
     \item Have a little Euclid, Knuth, Dijkstra in your mind and let them argue.
   \end{enumerate}
 \end{frame}
+
 \end{document}

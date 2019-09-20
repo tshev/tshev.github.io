@@ -30,12 +30,32 @@ struct is_equality_comparable<T,
 {
 };
 
+template<typename T, typename... U>
+struct all_same {
+    static constexpr const bool value = all_same<T>::value && all_same<U...>::value;
+};
+
+template<typename T, typename U>
+struct all_same<T, U> {
+    static constexpr const bool value = std::is_same<T, U>::value;
+};
 
 template<typename T, typename = void>
 struct is_less_than_comprable: std::false_type {};
 
 template<typename T>
 struct is_less_than_comprable<T, typename std::enable_if<std::is_same<decltype(std::declval<T&>() < std::declval<T&>()), bool>::value>::type> : std::true_type {};
+
+template<typename T, typename... U>
+struct is_regular {
+    static constexpr const bool value = is_regular<T>::value && is_regular<U...>::value;
+};
+
+template<typename T>
+struct is_regular<T> {
+    static constexpr const bool value = std::is_default_constructible<T>::value && std::is_copy_constructible<T>::value && std::is_copy_assignable<T>::value && std::is_destructible<T>::value && cppcon::is_equality_comparable<T>::value;
+};
+
 
 template<typename T, typename U = ValueType(T)>
 concept writable = requires(T it, U x) { *it = x; }; 
@@ -45,7 +65,7 @@ template<typename T>
 concept readable = std::is_same<decltype(*std::declval<T>()), value_type_t<T>&>::value || std::is_same<decltype(*std::declval<T>()), const value_type_t<T>&>::value;;
 
 template<typename T>
-concept semiregular = std::is_default_constructible<T>::value && std::is_copy_constructible<T>::value && std::is_copy_assignable<T>::value;
+concept semiregular = std::is_default_constructible<T>::value && std::is_copy_constructible<T>::value && std::is_copy_assignable<T>::value && std::is_destructible<T>::value;
 
 template<typename T>
 concept regular = semiregular<T> && cppcon::is_equality_comparable<T>::value;
@@ -53,21 +73,26 @@ concept regular = semiregular<T> && cppcon::is_equality_comparable<T>::value;
 template<typename T>
 concept totally_ordered = regular<T> && is_less_than_comprable<T>::value;
 
+template<typename F, typename... T>
+concept functional_procedure = (regular<typename std::invoke_result<F, T...>::type> || std::is_same<typename std::invoke_result<F, T...>::type, void>::value) && is_regular<T...>::value;
+
+template<typename F, typename... T>
+concept homogeneous_function = functional_procedure<F, T...> && sizeof...(T) > 0 && all_same<T...>::value;
+
+template<typename F, typename... T>
+concept predicate = functional_procedure<F, T...> && std::is_same<codomain_t<F, T...>, bool>::value;
+
+template<typename F, typename... T>
+concept homogeneous_predicate = predicate<F, T...> && homogeneous_function<T...>;
+
 template<typename R, typename T>
-concept relation = std::is_same<typename std::invoke_result<R, T, T>::type, bool>::value;
+concept relation = predicate<R, T, T>;
 
 template<typename R, typename T>
 concept weak_strict_ordering = regular<T> && relation<R, T>; 
 
 template<typename R, typename T>
 concept weak_strict_ordering = regular<T> && relation<R, T>;
-
-template<typename F, typename... T>
-concept functional_procedure = regular<typename std::invoke_result<F, T...>::type> || std::is_same<typename std::invoke_result<F, T...>::type, void>::value;
-
-
-template<typename F, typename... T>
-concept predicate = functional_procedure<F, T...> && std::is_same<typename std::invoke_result<F, T...>::type, bool>::value;
 
 
 template<typename F, typename T>
