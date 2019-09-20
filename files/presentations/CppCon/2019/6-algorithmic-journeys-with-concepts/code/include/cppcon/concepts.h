@@ -40,6 +40,12 @@ struct all_same<T, U> {
     static constexpr const bool value = std::is_same<T, U>::value;
 };
 
+template<typename T>
+struct all_same<T> {
+    static constexpr const bool value = true;
+};
+
+
 template<typename T, typename = void>
 struct is_less_than_comprable: std::false_type {};
 
@@ -57,8 +63,6 @@ struct is_regular<T> {
 };
 
 
-template<typename T, typename U = ValueType(T)>
-concept writable = requires(T it, U x) { *it = x; }; 
 
 
 template<typename T>
@@ -69,6 +73,9 @@ concept semiregular = std::is_default_constructible<T>::value && std::is_copy_co
 
 template<typename T>
 concept regular = semiregular<T> && cppcon::is_equality_comparable<T>::value;
+
+template<typename T, typename U = ValueType(T)>
+concept writable = requires(T it, U x) { *it = x; }; 
 
 template<typename T>
 concept totally_ordered = regular<T> && is_less_than_comprable<T>::value;
@@ -83,10 +90,10 @@ template<typename F, typename... T>
 concept predicate = functional_procedure<F, T...> && std::is_same<codomain_t<F, T...>, bool>::value;
 
 template<typename F, typename... T>
-concept homogeneous_predicate = predicate<F, T...> && homogeneous_function<T...>;
+concept homogeneous_predicate = predicate<F, T...> && homogeneous_function<F, T...>;
 
 template<typename R, typename T>
-concept relation = predicate<R, T, T>;
+concept relation = homogeneous_predicate<R, T, T>;
 
 template<typename R, typename T>
 concept weak_strict_ordering = regular<T> && relation<R, T>; 
@@ -134,7 +141,6 @@ concept additive_monoid = additive_semigroup<T>; // 0 \in T, identity_element(T)
 
 template<typename F, typename T>
 concept projection_function = totally_ordered<codomain_t<F, T>>;
-//&& unary_function<F, T> && std::is_same<codomain_t<F, T>, T>::value;
 
 } // namespace cppcon
 

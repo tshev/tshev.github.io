@@ -1,4 +1,5 @@
 #include <iostream>
+#include <numeric>
 #include <algorithm>
 #include <memory>
 #include <vector>
@@ -118,60 +119,67 @@ T& max(T& x, T& y, Projection projection) {
     return y;
 }
 
-
-template<forward_iterator It>
-requires(regular<value_type_t<It>> && writable<It>)
-It unique(It first, It last) {
-    if (first == last) { return last; }
-    It result = first;
-    ++first;
+template<forward_iterator It, output_iterator Out, relation<value_type_t<It>> R>
+requires readable<It> && writable<Out, value_type_t<It>>
+Out unique_copy(It first, It last, Out out, R r) {
+    if (first == last) { return out; }
+    *out = *first;  
+    ++out;
+    It previous = first; ++first;
     while (first != last) {
-        if (*result == *first) {
-           ++first;
-        } else {
-            ++result;
-            *result = *first;
-            ++first;
+        if (!r(*previous, *first)) {
+          *out = *first;
+          ++out;
         }
+        ++first;
+        ++previous;
     }
-    ++result;
-    return result;
+    return out;
 }
 
+template<forward_iterator It, output_iterator Out>
+requires readable<It> && writable<Out, value_type_t<It>>
+Out unique_copy(It first, It last, Out out) {
+    return cppcon::unique_copy(first, last, out, std::equal_to<value_type_t<It>>());
+}
 
 template<forward_iterator It, relation<value_type_t<It>> R>
-requires writable<It>
+requires readable<It> && writable<It>
 It unique(It first, It last, R r) {
     if (first == last) { return last; }
     It result = first; ++first;
     while (first != last) {
-        if (*result == *first) {
-           ++first;
-        } else {
+        if (!r(*result, *first)) {
             ++result;
             *result = *first;
-            ++first;
         }
+        ++first;
     }
     ++result;
     return result;
 }
 
+
+template<forward_iterator It>
+requires(regular<value_type_t<It>> && readable<It> && writable<It>)
+It unique(It first, It last) {
+    return cppcon::unique(first, last, std::equal_to<value_type_t<It>>());
+}
 
 
 template<forward_iterator It, additive_monoid N, relation<value_type_t<It>> R>
 requires readable<It>
 N unique_count(It first, It last, N n, R r) {
     if (first == last) { return n; }
-    It slow = first;
+    It previous = first;
     ++first;
     while (first != last) {
-        if (r(*slow, *first)) {
-           ++slow;
+        if (r(*previous, *first)) {
+           ++previous;
            ++first;
         } else {
             ++first;
-            ++slow;
+            ++previous;
             ++n;
         }
     }
@@ -183,7 +191,7 @@ N unique_count(It first, It last, N n, R r) {
 template<forward_iterator It, additive_monoid N>
 requires(readable<It>)
 N unique_count(It first, It last, N n) {
-    return unique_count(first, last, n, [](const auto& x, const auto& y) { return x == y; });
+    return unique_count(first, last, n, std::equal_to<value_type_t<It>>());
 }
 
 
@@ -198,8 +206,8 @@ std::pair<It, N> find_not(It first, It last, const value_type_t<It>& x, N n) {
 }
 
 
-template<forward_iterator It, relation<value_type_t<It>> R, additive_monoid N>
-requires(readable<It>) // TODO
+template<forward_iterator It, relation< value_type_t<It> > R, additive_monoid N>
+requires(readable<It>)
 std::pair<It, N> find_if_not(It first, It last, const value_type_t<It>& x, R r, N n) {
     while (first != last && r(*first, x)) {
         ++first;
@@ -210,7 +218,7 @@ std::pair<It, N> find_if_not(It first, It last, const value_type_t<It>& x, R r, 
 
 
 template<forward_iterator It, output_iterator Out>
-requires readable<It> && writable<Out, std::pair<value_type_t<It>, size_t>> // TODO value type
+requires readable<It> && writable<Out, std::pair<value_type_t<It>, size_t>>
 Out frequencies(It f, It l, Out out) {
   typedef size_t N;
   while (f != l) { 
@@ -225,8 +233,8 @@ Out frequencies(It f, It l, Out out) {
   return out;
 }
 
-template<forward_iterator It, output_iterator Out, relation<std::pair<value_type_t<It>, size_t>> R>
-requires readable<It> && writable<Out> // TODO value type
+template<forward_iterator It, output_iterator Out, relation<value_type_t<It>> R>
+requires readable<It> && writable<Out, std::pair<value_type_t<It>, size_t>>
 Out frequencies(It f, It l, Out out, R r) {
   typedef size_t N;
   while (f != l) { 
@@ -286,23 +294,24 @@ std::pair<Out0, Out1> frequencies(It f, It l, Out0 out0, Out1 out1) {
   return {out0, out1};
 }
 
+
 template<forward_iterator It,
-         output_iterator Out,
+         typename Out,
          relation<value_type_t<It>> P,
          functional_procedure<It, It> F>
-requires readable<It> && writable<Out, codomain_t<F, It, It>> 
+requires readable<It> && (forward_iterator<Out> || output_iterator<Out>)  && writable<Out, codomain_t<F, It, It>> 
 Out transform_subgroups(It first, It last, Out out, P pred, F function) {
     if (first == last) { return out; }
-    It slow = first;
-    It fast = slow;
+    It previous = first;
+    It fast = previous;
     ++fast;
     while (fast != last) {
-        if (!pred(*slow, *fast)) {
+        if (!pred(*previous, *fast)) {
             *out = function(first, fast);
             ++out;
             first = fast;
         }
-        ++slow; ++fast;
+        ++previous; ++fast;
     }
     *out = function(first, fast);
     return ++out;
@@ -310,25 +319,25 @@ Out transform_subgroups(It first, It last, Out out, P pred, F function) {
 
 
 template<forward_iterator It,
-         output_iterator Out,
+         typename Out,
          relation<value_type_t<It>> P,
          functional_procedure<It, distance_type_t<It>> F>
-requires readable<It> && writable<Out, codomain_t<F, It, distance_type_t<It>> >
+requires readable<It> && (forward_iterator<Out> || output_iterator<Out>) && writable<Out, codomain_t<F, It, distance_type_t<It>> >
 Out transform_subgroups(It first, It last, Out out, P pred, F function) {
     if (first == last) { return out; }
-    It slow = first;
-    It fast = slow;
+    It previous = first;
+    It fast = previous;
     ++fast;
-    size_t n = 0;
+    distance_type_t<It> n = 0;
     while (fast != last) {
-        if (!pred(*slow, *fast)) {
+        if (!pred(*previous, *fast)) {
             *out = function(first, n);
             n = 0;
             ++out;
             first = fast;
         }
         ++n;
-        ++slow; ++fast;
+        ++previous; ++fast;
     }
     *out = function(first, n);
     return ++out;
@@ -336,11 +345,10 @@ Out transform_subgroups(It first, It last, Out out, P pred, F function) {
 
 
 template<forward_iterator It,
-         output_iterator Out,
          relation<value_type_t<It>> Predicate,
          functional_procedure<It, It> F>
-requires readable<It> && writable<Out, codomain_t<F, It, distance_type_t<It>>>
-Out squash_subgroups(It first, It last, Predicate pred, F function) {
+requires readable<It> && writable<It, codomain_t<F, It, It>>
+It squash_subgroups(It first, It last, Predicate pred, F function) {
     return transform_subgroups(first, last, first, pred, function);
 }
 
@@ -444,6 +452,23 @@ Out transform_split(It0 first0, It0 last0, Out out, It1 first1, It1 last1, F f) 
 
 template<forward_iterator It, unary_predicate<value_type_t<It>> P>
 requires readable<It> && writable<It>
+It remove(It first, It last, const value_type_t<It>& value) {
+    first = std::find(first, last, value);
+    if (first == last) { return last; }
+    It fast = first; ++fast;
+    while (fast != last) {
+        if (*fast == value) {
+            ++fast;
+        } else {
+            *first = std::move(*fast);
+            ++first; ++fast;
+        }
+    }
+    return first;
+}
+
+template<forward_iterator It, unary_predicate<value_type_t<It>> P>
+requires readable<It> && writable<It>
 It remove_if(It first, It last, P pred) {
     first = std::find_if(first, last, pred);
     if (first == last) { return last; }
@@ -535,6 +560,10 @@ void journey0() {
 void journey1() {
     std::vector<int> values = {1, 1, 2, 3, 3, 3, 4, 4, 5};
     auto values_copy = values;
+    std::vector<int> unique_copies;
+    cppcon::unique_copy(std::begin(values), std::end(values), std::back_inserter(unique_copies));
+
+    
     assert(cppcon::unique(std::begin(values_copy), std::end(values_copy)) - std::begin(values_copy) == 5);
     assert(cppcon::unique_count(std::begin(values), std::end(values), 0) == 5);
 
@@ -552,7 +581,7 @@ void journey1() {
     std::vector<size_t> expected_occurences= {2ul, 1ul, 3ul, 2ul, 1ul};
     assert(unique_elements == expected_unique_elements);
     assert(occurences == expected_occurences);
-
+    assert(unique_copies == expected_unique_elements);
 }
 
 void journey2() {
@@ -565,6 +594,21 @@ void journey2() {
         std::equal_to<int>(),
         [](auto first, size_t n) { return std::pair<int, size_t>(*first, n); }
     );
+
+    std::vector<std::pair<char, int>> pairs = {{'a', 10}, {'a', 2}, {'b', 10}, {'c', 12}};
+    std::vector<std::pair<char, int>> expected_pairs = {{'a', 12}, {'b', 10}, {'c', 12}};
+
+    
+    struct equal_first {
+        bool operator()(std::pair<char, int> x, std::pair<char, int> y) const {
+            return x.first == y.first;
+        }
+    };
+    typedef decltype(pairs)::iterator iterator;
+    auto middle = cppcon::squash_subgroups(std::begin(pairs), std::end(pairs), equal_first(), [](iterator first, iterator last) {
+        int n = std::accumulate(first, last, 0, [](int x, auto y) { return x + y.second; });
+        return std::pair<char, int>(first->first, n);
+    });
 }
 
 void journey3() {
@@ -608,4 +652,11 @@ int main() {
     journey2(); // frequencies
     journey3(); // split
     journey4(); // remove_if, semistable_partition
+
+
+    struct foo {
+        bool operator()(int x, int y) {
+            return true;
+        }
+    };
 }
