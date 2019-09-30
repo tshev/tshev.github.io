@@ -11,6 +11,13 @@
 \usepackage{appendixnumberbeamer}
 \usepackage{booktabs}
 \usepackage[scale=2]{ccicons}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+}
 
 \usepackage{pgfplots}
 \usepgfplotslibrary{dateplot}
@@ -1284,8 +1291,11 @@ std::pair<It0, It1> semistable_partition(It0 first0, It0 last0, It1 first1, P pr
 \end{lstlisting}
 \end{frame}
 
-\section{Conclusion}
+\begin{frame}[fragile]{Journey \#6}
+\Huge Demo
+\end{frame}
 
+\section{Conclusion}
 \begin{frame}{Conclusion}
   \begin{enumerate}
     \item Concepts are mathematical. They are not specific to C++.
@@ -1306,5 +1316,16 @@ while (first != last) {
   // write good code
 }
 \end{lstlisting}
+\end{frame}
+
+\begin{frame}{Sources and Related Materials}
+  \begin{enumerate}
+    \item The Thirteen Books of the Elements, Vol. 1: Books 1-2 2nd ed. Edition by Thomas L. Heath (Author), Euclid (Author).
+    \item From Mathematics to Generic Programming 1st Edition by Alexander A. Stepanov (Author), Daniel E. Rose (Author).
+    \item Elements of Programming 1st Edition by Alexander A. Stepanov (Author), Paul McJones (Author).
+    \item Species Plantarum by Carolus Linnaeus.
+    \item \href{https://github.com/tshev/tshev.github.io/tree/master/files/presentations/CppCon/2019/6-algorithmic-journeys-with-concepts/code}{Source code for the lecture}.
+    \item \href{https://github.com/tshev/tshev.github.io/blob/master/files/presentations/CppCon/2019/6-algorithmic-journeys-with-concepts/demo.pdf}{The latest version of this presentation}.
+  \end{enumerate}
 \end{frame}
 \end{document}
