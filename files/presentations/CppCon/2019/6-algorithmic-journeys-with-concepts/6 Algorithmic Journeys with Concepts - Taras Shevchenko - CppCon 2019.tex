@@ -376,7 +376,7 @@ concept semiregular = std::is_default_constructible<T>::value &&
 \begin{lstlisting}[style=cpp]
 
 template<typename T>
-concept semiregular = semiregular<T> && is_equality_comparable<T>::value;
+concept regular = semiregular<T> && is_equality_comparable<T>::value;
 
 \end{lstlisting}
 \end{frame}
