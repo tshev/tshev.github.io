@@ -61,6 +61,52 @@ def load_ltr_dataset(path):
     return x_train[sort_index], y_train[sort_index], group_id[sort_index]
 
 
+def ngrams(iterable, n, dtype=tuple, transformation=None):
+    if f is None:
+        ngram = [x for x in itertools.islice(iterable, 0, n)]
+        if len(ngram) != n:
+            return
+        yield dtype(ngram)
+
+        for x in itertools.islice(iterable, n, None):
+            ngram.pop(0)
+            ngram.append(x)
+            yield dtype(ngram)
+        return
+
+    if callable(f):
+        ngram = [f(x) for x in itertools.islice(iterable, 0, n)]
+        if len(ngram) != n:
+            return
+        yield dtype(ngram)
+
+        for x in itertools.islice(iterable, n, None):
+            ngram.pop(0)
+            ngram.append(f(x))
+            yield dtype(ngram)
+        return
+    raise ValueError("f must be None or callable")
+
+
+def ngrams_with_left_pad(iterable, n, pad="", dtype=tuple, f=None):
+    ngrams = [pad for x in range(n)]
+
+    if f is not None:
+        for x in iterable:
+            ngrams.pop(0)
+            ngrams.append(x)
+            yield dtype(ngrams)
+        return None
+
+    if callable(f):
+        for x in iterable:
+            ngrams.pop(0)
+            ngrams.append(f(x))
+            yield dtype(ngrams)
+        return None
+    raise ValueError("f must be None or callable")
+    
+
 def main():
     x_train, y_train, group_id_train = load_ltr_dataset("data/MSLR-WEB10K/Fold1/tmp") 
     x_test, y_test, group_id_test = load_ltr_dataset("data/MSLR-WEB10K/Fold1/test.txt") 
