@@ -1,10 +1,13 @@
 \documentclass[10pt]{beamer}
 \usepackage[utf8]{inputenc}
+\usepackage{commath}
 \usepackage{listings}
 \usepackage{xcolor}
+\usepackage{array}
 \usepackage{makecell}
 
 \usepackage{amsmath}
+\usepackage{amstext}
 \usepackage{nccmath}
 %\usepackage{showframe}
 \usepackage{amssymb} 
@@ -25,6 +28,7 @@
 
 \usepackage{xspace}
 \newcommand{\themename}{\textbf{\textsc{metropolis}}\xspace}
+\newcommand{\ip}[2]{{\langle #1, #2 \rangle}}
 
 \title{Ранжування текстових документів}
 %\subtitle{Generic algorithms and performance}
@@ -302,6 +306,112 @@ $$nDCG_{p} = \frac{DCG_{p}}{IDCG_{p}} = \frac{\sum_{i=1}^{p}{\frac{rel_{i}}{log_
 &+[135.2 < 93.12] + [135.2 < 80.12] + [93.12 < 80.12]) / 6 = 0.0
 \end{align*}
 \end{frame}
+
+
+\begin{frame}{Оцінка поточного алгоритму сортування. Інші методи.}
+
+\begin{tabular}{ll}
+    %\hline
+    \makecell{Точність\\~} & \makecell{\text{$Precision = \frac{|relevant~retrieved~documents|}{|retrieved~documents|} = \frac{tp}{tp + fp}$}\\~} \\ 
+    %\hline
+    \makecell{Повнота\\~}  & \makecell{\text{$Recall = \frac{|relevant~retrieved~documents|}{|relevant~documents|} = \frac{tp}{tp + fn}$}\\~} \\
+    %\hline
+    \makecell{F-score\\~}  & \makecell{\text{$F = \frac{1}{\alpha\frac{1}{P} + (1 - \alpha)\frac{1}{R}}$}\\~} \\
+    %\hline
+    \makecell{MAP\\~}      & \makecell{\text{$MAP= \frac{1}{|Q|}\sum_{j=1}^{|Q|}{\frac{1}{m_{j}}\sum_{k=1}^{m_{j}}{Precision(R_{jk})}}$}\\~} \\
+    %\hline
+\end{tabular}
+\end{frame}
+
+\begin{frame}{Ранжування. Формулювання задачі}
+\begin{itemize}
+    \item $D$ - колекція документів
+    \item $Q$ - множина пошукових запитів
+    \item $D_{q} \subseteq D$ - множина документів, знайдених за запитом $q$
+    \item $X = Q \times D$ - об'єкти начальної вибірки (пари <запит, документ>)
+    \item $Y$ - множина оцінок пар
+    \item $y: X \rightarrow R$ - оцінки релеванотності, $y(q, d)$ - оцінка релевантності документу $d$ для запиту $q$
+    \item $x(q, d) = \{f_{1}(q, d), ..., f_{n}(q, d)\}$
+    \item $(q, d_{i}) \prec (q_{j})$
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Ознаки ранжування}
+\begin{tabular}{|l|l|}
+\hline
+\thead{Категорія}              & \thead{Категорія} \\ \hline
+Для документа                  & \makecell{Квантилі CTR, Індекс якості документу, кількість\\посилань, довжина документу,\\авторитетність автора}  \\ \hline
+Для запиту                     & \makecell{Квантилі IDF, популярність запиту,\\ сумарна частота слів}  \\ \hline
+\makecell{Для запиту\\та документу}        & \makecell{Кількість кліків для запиту, LCS, LCCS, BM25,\\ LCS-BM25, wclccs, LMIR, MinHitPos, MinBestSpanPos} \\ \hline
+\end{tabular}
+\end{frame}
+
+
+
+\begin{frame}{Підходи до ранжування}
+
+\begin{itemize}
+    \item Поточковий - застосування алгоритмів регресії та класифікація на парах запит-документ
+    \item Попарний - алгоритм фокусується ге на апроксимації релевантності, а на попарних відношеннях релевантностей.
+    \item Списковий - алгоритм фокусується на визначенні міри релевантності для документів, які видані для певного запиту.
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Приклади алгоритмів ранжування}
+
+\begin{tabular}{|l|l|}
+\hline
+\thead{Підхід} & \thead{Алгоритми} \\ \hline
+Поточковий  & \makecell{Лінійна регресія, преспетрон,\\косинусна функція врат, TFRank}         \\ \hline
+Попарний    & \makecell{RankSVM, SortNet, RankNet, FRank,\\RankBoost, GBRank, MHR, LambdaRank} \\ \hline
+Списковий   & \makecell{SoftRank, Smooth Rank, AdaRank, ListNet,\\ListMLE, BoltzRank}          \\ \hline
+\end{tabular}
+\end{frame}
+
+
+\begin{frame}{Швидке нагадування про SVM}
+\begin{align}
+&\sum_{i=1}^{m}{(1 - y_{i}(\ip{\vec{x}_{i}}{\vec{w}} - w_{0}))_{+}} + \frac{1}{2C}\norm{\vec{w}}^{2} \approx \\
+& \approx \sum_{i=1}^{m}{\log_{2}{(1 + e^{1- y_{i}(\ip{\vec{x}_{i}}{\vec{w}} - w_{0})})} + \frac{1}{2C}\norm{\vec{w}}^{2}}
+\rightarrow \min_{w,w_{0}}
+\end{align}
+\begin{equation}\vec{w} \in R^{n} \text{ - вектор ваг} \end{equation}
+\begin{equation}w_{0} \in R \text{ - зміщення}\end{equation}
+\begin{equation}\vec{x}_{i} \in R^{n} \text{ - вектори ознак}\end{equation}
+\begin{equation}y_{i} \in \{-1, 1\} \text{ - мітки}\end{equation}
+\begin{equation}(\vec{x}_{i}, \vec{w}) - w_{0} > 0 \text{ - функція прийняття рішень}\end{equation}
+\end{frame}
+
+
+\begin{frame}{Іграшковий приклад}
+    \begin{center}
+        \begin{figure}
+        \includegraphics[height=7cm]{images/svm-example.png}
+        \end{figure}
+    \end{center}
+\end{frame}
+
+\begin{frame}{Попарний підхід. Ranking SVM}
+Постановки задач SVM для попарного підходу
+\begin{equation}
+Q(a) = \frac{1}{2}\norm{\vec{w}}^{2} + C\sum_{i \prec j}{(1 - \ip{w}{x_{j} - x_{i}})_{+}}
+\end{equation}
+
+Еквівалентна постановка задачі у термінах квадтратичного програмування:
+\[
+\begin{cases}
+\displaystyle
+\frac{1}{2}\norm{\vec{w}}^{2} + C\sum_{i \prec j}{\xi_{ij}} \rightarrow \min_{\vec{w}, \xi}; \\
+\ip{w}{x_{j} - x_{i}} \geq 1 - \xi_{ij},~i \prec j;\\
+\xi_{ij} \geq 0,~ i \prec j\\
+\end{cases}
+\]
+
+\end{frame}
+
+
 
 
 \end{document}
