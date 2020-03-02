@@ -393,6 +393,23 @@ $$nDCG_{p} = \frac{DCG_{p}}{IDCG_{p}} = \frac{\sum_{i=1}^{p}{\frac{rel_{i}}{log_
     \end{center}
 \end{frame}
 
+\begin{frame}{Іграшковий приклад. Нелінійний випадок.}
+    \begin{center}
+        \begin{figure}
+        \includegraphics[height=7cm]{images/svm-example-non-linear-problems.png}
+        \end{figure}
+    \end{center}
+\end{frame}
+
+\begin{frame}{Іграшковий приклад. Обробка нелінійних даних за допомогою лінійної моделі.}
+    \begin{center}
+        \begin{figure}
+        \includegraphics[height=7cm]{images/svm-example-non-linear-problems-fix.png}
+        \end{figure}
+    \end{center}
+\end{frame}
+
+
 \begin{frame}{Попарний підхід. Ranking SVM}
 Постановки задач SVM для попарного підходу
 \begin{equation}
@@ -408,10 +425,7 @@ Q(a) = \frac{1}{2}\norm{\vec{w}}^{2} + C\sum_{i \prec j}{(1 - \ip{w}{x_{j} - x_{
 \xi_{ij} \geq 0,~ i \prec j\\
 \end{cases}
 \]
-
 \end{frame}
-
-
 
 
 \end{document}
