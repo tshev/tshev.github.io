@@ -1,3 +1,6 @@
 /data/MSLR-WEB10K/*
 /data/MSLR-WEB30K.zip
 /data/MSLR-WEB10K.zip
+*.swp
+*.swo
+data

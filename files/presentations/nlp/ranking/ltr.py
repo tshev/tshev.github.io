@@ -11,7 +11,7 @@ def ascending_descending_key(x):
 
 
 def generate_pairs_from_rows(xyg, max_group_size=None, permute_pairs=lambda x: x):
-    for gid, rows in groupby(X, key=lambda x: x[-1]):
+    for gid, rows in groupby(xyg, key=lambda x: x[-1]):
         count = 0
         for r0, r1 in permute_pairs(combinations(rows, 2)):
             y0, y1 = r0[-2], r1[-2]
@@ -20,6 +20,25 @@ def generate_pairs_from_rows(xyg, max_group_size=None, permute_pairs=lambda x: x
                 count += 1
             elif y1 < y0:
                 yield (r1[:-2], y1), (r0[:-2], y0)
+                count += 1
+            if count == max_group_size:
+                break
+
+
+def generate_ltr_pairs(xyg,
+                       transformation=lambda x: x[0],
+                       max_group_size=None,
+                       permute_pairs=lambda x: x):
+
+    for gid, rows in groupby(xyg, key=lambda x: x[1][-1]):
+        count = 0
+        for r0, r1 in permute_pairs(combinations(rows, 2)):
+            y0, y1 = r0[1][-2], r1[1][-2]
+            if y0 < y1:
+                yield transformation(r1), transformation(r0)
+                count += 1
+            elif y1 < y0:
+                yield transformation(r0), transformation(r1)
                 count += 1
             if count == max_group_size:
                 break
@@ -133,10 +152,10 @@ def ngrams_with_left_pad(iterable, n, pad="", dtype=tuple, f=None):
     raise ValueError("f must be None or callable")
     
 
-def dcg(relevances, p=None):
-    if p is None:
-        p = len(relevances)
-    return sum(x / log2(i) for i, x in islice(enumerate(relevances, 2), 0, p))
+def dcg(relevances, n=None):
+    if n is None:
+        n = len(relevances)
+    return sum(x / log2(i) for i, x in islice(enumerate(relevances, 2), 0, n))
 
 
 def good_pair(x, y):
@@ -156,10 +175,10 @@ def pair_accuracy(y_trues, y_preds):
     return s / total_count
 
 
-def dcg_exp(relevances, p=None):
-    if p is None:
-        p = len(relevances)
-    return sum(2.0**x - 1.0 / log2(i) for i, x in islice(enumerate(relevances, 2), 0, p))
+def dcg_exp(relevances, n=None):
+    if n is None:
+        n = len(relevances)
+    return sum((2.0**x - 1.0) / log2(i) for i, x in islice(enumerate(relevances, 2), 0, n))
 
 
 def zip_sort(*args, **kwargs):
@@ -168,40 +187,43 @@ def zip_sort(*args, **kwargs):
     return pairs
 
 
-def _ndcg(y_true, y_pred, dcg, p=None, copy=True):
+def _ndcg(y_true, y_pred, dcg, n=None, copy=True):
     assert len(y_true) == len(y_pred)
-    if p is None:
-        p = len(y_pred)
+
+    if n is None:
+        n = len(y_pred)
+
     a = list(zip(y_pred, y_true))
     a.sort(reverse=True, key=ascending_descending_key)
-    m = dcg((x[1] for x in a), p=p)
 
-    y_true = list(y_true)
+    if copy:
+        y_true = list(y_true)
     y_true.sort(reverse=True)
 
-    n = dcg(y_true, p=p)
+    m = dcg((x[1] for x in a), n=n)
+    n = dcg(y_true, n=n)
 
     if n > 0:
         return m / n
 
-    #if m == n:
-    #    return 1
+    if m == n:
+        return 1
 
     return 0.0
 
-def ndcg(y_true, y_pred, p=None, copy=True):
-    return _ndcg(y_true, y_pred, dcg, p=p, copy=copy)
+def ndcg(y_true, y_pred, n=None, copy=True):
+    return _ndcg(y_true, y_pred, dcg, n=n, copy=copy)
 
 
 
-def mean_ndcg(y_trues, y_preds, p=None):
-    return np.mean([ndcg(y_true, y_pred, p=p) for y_true, y_pred in zip(y_trues, y_preds)])
+def mean_ndcg(y_trues, y_preds, n=None):
+    return np.mean([ndcg(y_true, y_pred, n=n) for y_true, y_pred in zip(y_trues, y_preds)])
 
-def mean_ndcg_exp(y_trues, y_preds, p=None):
-    return np.mean([ndcg_exp(y_true, y_pred, p=p) for y_true, y_pred in zip(y_trues, y_preds)])
+def mean_ndcg_exp(y_trues, y_preds, n=None):
+    return np.mean([ndcg_exp(y_true, y_pred, n=n) for y_true, y_pred in zip(y_trues, y_preds)])
 
-def ndcg_exp(y_true, y_pred, p=None, copy=True):
-    return _ndcg(y_true, y_pred, dcg_exp, p=p, copy=copy)
+def ndcg_exp(y_true, y_pred, n=None, copy=True):
+    return _ndcg(y_true, y_pred, dcg_exp, n=n, copy=copy)
 
 def main():
     x_train, y_train, group_id_train = load_ltr_dataset("data/MSLR-WEB10K/Fold1/tmp") 
@@ -211,6 +233,34 @@ def main():
     ranker = SVCRanker(linear_svc)
     ranker.fit(x_train, y_train, group_id_train)
     import pdb;pdb.set_trace()  
+
+def make_pairwise_classifier(X, pairs, seed):
+    X_train = X[pairs[:, 0]] - X[pairs[:, 1]]
+    y_train = np.ones(X_train.shape[0])
+    indicies = np.arange(X_train.shape[0])
+    np.random.seed(seed)
+    np.random.shuffle(indicies)
+    indicies = indicies[:X_train.shape[0] // 2]
+    X_train[indicies] *= -1
+    y_train[indicies] *= -1
+    return X_train, y_train
+
+
+
+class PairwiseRanker(object):
+    def __init__(self, binary_classifier, seed=0):
+        self.binary_classifier = binary_classifier
+        self.seed = seed
+
+    def fit(self, X, y, pairs=None):
+        X_train, y_train = make_pairwise_classifier(X, pairs, self.seed)
+        self.binary_classifier.fit(X_train, y_train)
+        return self
+
+    def predict(self, X):
+        return self.binary_classifier.decision_function(X)
+
+        
 
 if __name__ == "__main__":
     main()
