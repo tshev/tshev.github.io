@@ -1,4 +1,5 @@
 import numpy as np
+import random
 from math import log, log2
 from itertools import combinations, islice, groupby
 from random import random as random_float
@@ -8,6 +9,45 @@ from sklearn.datasets import load_svmlight_file
 def ascending_descending_key(x):
     assert len(x) == 2
     return (x[0], -x[1])
+
+
+def make_subranges_from_fractions(n, fractions):
+    i = 0
+    for k, fraction in enumerate(fractions, 1):
+        if k == len(fractions):
+            yield i, n
+        else:
+            delta = int(fraction * n)
+            yield i, i + delta
+            i += delta
+            
+def split_df_by_fractions(df, group_id, fractions=[0.5, 0.5], seed=None):
+    fractions = np.array(fractions)
+    fractions = fractions / fractions.sum()
+    groups = df[group_id].unique()
+    np.random.seed(seed)
+    np.random.shuffle(groups)
+    
+    return [df[df[group_id].isin(groups[i:j])] for i, j in make_subranges_from_fractions(len(groups), fractions)]
+
+
+def grouped_ltr_output(df, k, group_id_column="138"):
+    return [df[k].values for _, df in df.groupby(group_id_column)]
+
+
+def shuffle(x):
+    #print(x)
+    x = list(x)
+    random.shuffle(x)
+    return x
+
+def shuffle_truncate(count):
+    def wrapper(x):
+        return shuffle(x)[:count]
+    return wrapper
+
+def select_ith_element(a, i):
+    return [x[i] for x in a]
 
 
 def generate_pairs_from_rows(xyg, max_group_size=None, permute_pairs=lambda x: x):
