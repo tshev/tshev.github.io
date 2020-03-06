@@ -5,7 +5,13 @@
 \usepackage{xcolor}
 \usepackage{array}
 \usepackage{makecell}
-
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+}
 \usepackage{amsmath}
 \usepackage{amstext}
 \usepackage{nccmath}
@@ -428,4 +434,88 @@ Q(a) = \frac{1}{2}\norm{\vec{w}}^{2} + C\sum_{i \prec j}{(1 - \ip{w}{x_{j} - x_{
 \end{frame}
 
 
+\begin{frame}{Rank Net та Lambda Rank}
+Гладкий функціонал ранжування.
+\begin{equation}
+F(a) = \sum_{i \prec j}{\log{(1 + e^{\sigma(\ip{x_{j} - x_{w}}{w})})}} \rightarrow \min_{w}
+\end{equation}
+Метод стохастичного градієнту:
+\begin{equation}
+w = w + \eta\frac{\sigma}{1 + e^{\sigma\ip{x_{j} - x_{i}}{w}}}(x_{j} - x_{i})
+\end{equation}
+Для оптимізації негладких функціоналів $map$, $ndcg$, $pFound$ варто домножити на модуль зміни цього функціоналу $L$ при зміні місцями $x_{i}$ та $x_{j}$.
+
+\begin{equation}
+w = w + \eta\frac{\sigma}{1 + e^{\sigma\ip{x_{j} - x_{i}}{w}}}(x_{j} - x_{i}) \abs{\Delta L_{ij}}
+\end{equation}
+\end{frame}
+
+\begin{frame}{PFound}
+$Y \subseteq [0, 1]$\\
+$y(q, d)$ - оцінка релевантності знайти відповідь у документі $d$.\\
+$a(q, d)$ - шукана функція ранжування.\\
+$d_{q}^{i}$ - $і$-й документ по спаданню $a(q, d)$.\\
+Ймовірність зайти відповідь в перших $n$ документах:
+\begin{align}
+pFound_{n}(q) = \sum_{i=1}^{n}{P_{i}y(q, d_{q}^{j})},
+\end{align}
+де $P_{i}$ - ймовірність дійти до $i$-го документу:
+\begin{align}
+P_{1} = 1;\\
+P_{i + 1} = P_{i}(1 - y(q, d_{q}^(i)))(1 - P_{out}),
+\end{align}
+де $P_{out}$ - ймовірність завершити пошук без відповіді (наприклад, 0.15).
+\end{frame}
+
+\begin{frame}{Catboost та підтримувані ним функції втрат}
+\begin{itemize}
+    \item PairLogit
+    \item PairLogitPairwise
+    \item YetiRank
+    \item YetiRankPairwise
+    \item StochasticFilter
+    \item QueryCrossEntropy
+    \item QueryRMSE
+    \item QuerySoftMax
+\end{itemize}
+\end{frame}
+
+\begin{frame}{TFRank}
+\begin{itemize}
+\item є застосуванням найронних мереж для 
+\item підтримує усі 3 типи функцій втрат (точкова, попарна, спискова).
+\end{itemize}
+\begin{figure}
+    \includegraphics[height=5cm]{images/tfrank-architecture.png}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Архітектура TFRank}
+\begin{figure}
+    \includegraphics[height=5cm]{images/tfrank-architecture2.png}
+\end{figure}
+\end{frame}
+
+
+\begin{frame}{Відомі вибірки}
+\begin{enumerate}
+    \item \href{https://www.microsoft.com/en-us/research/project/mslr/}{MSRank.}
+    \item \href{https://www.kaggle.com/c/home-depot-product-search-relevance}{Home Depot Product Search Relevance.}
+    \item \href{https://www.kaggle.com/c/crowdflower-search-relevance/data}{Crowdflower Search Results Relevance.}
+    \item \href{https://www.kaggle.com/c/yandex-personalized-web-search-challenge}{Yandex Personalized Web Search Challenge.}
+    \item \href{https://webscope.sandbox.yahoo.com/catalog.php?datatype=c}{Yahoo Learning to Rank Challenge.}
+    \item \href{https://lemurproject.org/clueweb09.php/}{ClueWeb09.}
+    \item \href{http://ir.dcs.gla.ac.uk/test_collections/access_to_data.html}{Gov2.}
+\end{enumerate}
+\end{frame}
+
+\begin{frame}{Матеріали для ознайомлення}
+\begin{enumerate}
+    \item \href{https://github.com/catboost/tutorials/blob/master/ranking/ranking_tutorial.ipynb}{Приклади застосування Catboost.}
+    \item \href{https://github.com/dmlc/xgboost/tree/master/demo/rank}{Приклад застосування XGBBoost.}
+    \item \href{https://github.com/tensorflow/ranking/blob/master/tensorflow_ranking/python/losses.py}{Функції втрат для tfrank.}
+    \item \href{https://github.com/tensorflow/ranking/tree/master/tensorflow_ranking/examples}{Приклади застосування tfrank.}
+    \item \href{http://bendersky.github.io/res/TF-Ranking-ICTIR-2019.pdf}{Презентація TF-Ranking.}
+\end{enumerate}
+\end{frame}
 \end{document}
