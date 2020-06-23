@@ -1,11 +1,11 @@
 # Site settings
-title: tshev.github.io
-email: tshev.org@gmail.com
+title: tshev.com
+email: taras@tshev.com
 description: > # this means to ignore newlines until "baseurl:"
   Native programming. Algorithms, data structures Linux.
   Programming languages: C, C++, Python
 baseurl: "" # the subpath of your site, e.g. /blog/
-url: "http://tshev.org" # the base hostname & protocol for your site
+url: "https://tshev.com" # the base hostname & protocol for your site
 twitter_username: tshevorg
 github_username:  tshev
 
