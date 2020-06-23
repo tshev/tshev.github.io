@@ -11,6 +11,7 @@ I like:
 * writing general-purpose algorithms;
 * bit manipulation;
 * making complex things as simple as possible.
+* classical math
 
 Favourite programming languages:
 
