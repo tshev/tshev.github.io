@@ -8,10 +8,10 @@ My name is Taras Shevchenko
 
 I like:
 
-* writing general-purpose algorithms;
-* bit manipulation;
-* making complex things as simple as possible.
-* classical math
+* Writing general-purpose algorithms.
+* Bit manipulation.
+* Making complex things as simple as possible.
+* Classical Math.
 
 Favourite programming languages:
 
@@ -20,10 +20,10 @@ Favourite programming languages:
 
 Specializations:
 
-* generic programming;
-* information retrieval;
-* systems programming
-* bottom-up software design.
+* Generic programming.
+* Information retrieval.
+* Systems programming.
+* Bottom-up software design.
 
 Favourite instructions:
 * movntdqa
