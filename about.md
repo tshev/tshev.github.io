@@ -4,7 +4,7 @@ title: About
 permalink: /about/
 ---
 
-My name is Taras Shevchenko
+My name is Taras Shevchenko.
 
 I like:
 
@@ -23,6 +23,7 @@ Specializations:
 * Generic programming.
 * Information retrieval.
 * Systems programming.
+* Back-end development.
 * Bottom-up software design.
 
 Favourite instructions:
