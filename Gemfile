@@ -1,3 +1,3 @@
-gem 'jekyll-gist'
+#gem 'jekyll-gist'
 gem 'kramdown'
 gem 'jekyll'
