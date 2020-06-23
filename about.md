@@ -8,21 +8,23 @@ My name is Taras Shevchenko
 
 I like:
 
-* native programming.
-* making complex things as simple as possible
+* writing general-purpose algorithms;
+* bit manipulation;
+* making complex things as simple as possible.
 
 Favourite programming languages:
 
 * C++
-* C
 * Python
-* Scheme
 
-Interests:
+Specializations:
 
-* concurency
-* search
-* web spiders
-* maps
-* ranking
-* probability theory
+* generic programming;
+* information retrieval;
+* systems programming
+* bottom-up software design.
+
+Favourite instructions:
+* movntdqa
+* movntpd
+* vpshufd
