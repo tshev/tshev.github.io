@@ -1,0 +1,22 @@
+\begin{Verbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8}]
+\PYGZbs{}\PYG{n}{begin}\PYG{p}{\PYGZob{}}\PYG{n}{frame}\PYG{p}{\PYGZcb{}\PYGZob{}}\PYG{n}{Search} \PYG{n}{Dataset} \PYG{o}{\PYGZhy{}} \PYG{n}{Feature} \PYG{n}{Space}\PYG{p}{\PYGZcb{}}
+    \PYGZbs{}\PYG{n}{begin}\PYG{p}{\PYGZob{}}\PYG{n+nb}{enumerate}\PYG{p}{\PYGZcb{}}
+        \PYGZbs{}\PYG{n}{item} \PYG{err}{\PYGZdl{}}\PYG{n}{f\PYGZus{}1}\PYG{p}{(}\PYG{n}{document}\PYGZbs{}\PYG{n}{\PYGZus{}id}\PYG{p}{)}\PYG{err}{\PYGZdl{}} \PYG{o}{\PYGZhy{}} \PYG{n}{knows} \PYG{n}{about} \PYG{n}{document} \PYG{n}{modalities}
+        \PYGZbs{}\PYG{n}{item} \PYG{err}{\PYGZdl{}}\PYG{n}{f\PYGZus{}2}\PYG{p}{(}\PYG{n}{session}\PYGZbs{}\PYG{n}{\PYGZus{}id}\PYG{p}{)}\PYG{err}{\PYGZdl{}} \PYG{o}{\PYGZhy{}} \PYG{n}{knows} \PYG{n}{about} \PYG{n}{user} \PYG{n+nb}{id}\PYG{p}{,} \PYG{n}{location}\PYG{p}{,} \PYG{n}{previous} \PYG{n}{actions}
+        \PYGZbs{}\PYG{n}{item} \PYG{err}{\PYGZdl{}}\PYG{n}{f\PYGZus{}3}\PYG{p}{(}\PYG{n}{query}\PYG{p}{)}\PYG{err}{\PYGZdl{}}
+        \PYGZbs{}\PYG{n}{item} \PYG{err}{\PYGZdl{}}\PYG{n}{f\PYGZus{}4}\PYG{p}{(}\PYG{n}{query}\PYG{p}{,} \PYG{n}{document}\PYGZbs{}\PYG{n}{\PYGZus{}id}\PYG{p}{)}\PYG{err}{\PYGZdl{}}
+        \PYGZbs{}\PYG{n}{item} \PYG{err}{\PYGZdl{}}\PYG{n}{f\PYGZus{}5}\PYG{p}{(}\PYG{n}{query}\PYG{p}{,} \PYG{n}{session\PYGZus{}id}\PYG{p}{)}\PYG{err}{\PYGZdl{}}
+        \PYGZbs{}\PYG{n}{item} \PYG{err}{\PYGZdl{}}\PYG{n}{f\PYGZus{}6}\PYG{p}{(}\PYG{n}{session}\PYGZbs{}\PYG{n}{\PYGZus{}id}\PYG{p}{,} \PYG{n}{document}\PYGZbs{}\PYG{n}{\PYGZus{}id}\PYG{p}{)}\PYG{err}{\PYGZdl{}}
+    \PYGZbs{}\PYG{n}{end}\PYG{p}{\PYGZob{}}\PYG{n+nb}{enumerate}\PYG{p}{\PYGZcb{}}
+\PYGZbs{}\PYG{n}{end}\PYG{p}{\PYGZob{}}\PYG{n}{frame}\PYG{p}{\PYGZcb{}}
+
+
+\PYGZbs{}\PYG{n}{begin}\PYG{p}{\PYGZob{}}\PYG{n}{frame}\PYG{p}{\PYGZcb{}\PYGZob{}}\PYG{n}{Search} \PYG{n}{Dataset} \PYG{o}{\PYGZhy{}} \PYG{n}{Data} \PYG{n}{Colection}\PYG{p}{\PYGZcb{}}
+    \PYGZbs{}\PYG{n}{begin}\PYG{p}{\PYGZob{}}\PYG{n+nb}{enumerate}\PYG{p}{\PYGZcb{}}
+        \PYGZbs{}\PYG{n}{item} \PYG{n}{Request} \PYG{o+ow}{and} \PYG{n}{Response}
+    \PYGZbs{}\PYG{n}{end}\PYG{p}{\PYGZob{}}\PYG{n+nb}{enumerate}\PYG{p}{\PYGZcb{}}
+\PYGZbs{}\PYG{n}{end}\PYG{p}{\PYGZob{}}\PYG{n}{frame}\PYG{p}{\PYGZcb{}}
+
+
+\PYGZbs{}\PYG{n}{end}\PYG{p}{\PYGZob{}}\PYG{n}{document}\PYG{p}{\PYGZcb{}}
+\end{Verbatim}
